@@ -17,4 +17,15 @@
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
+    <style name="TransparentBackground" parent="AppTheme">
+        <!-- подлупрозрачность окна -->
+        <item name="android:windowIsTranslucent">true</item>
+        <!-- прозрачный цвет бэкграунда -->
+        <item name="android:windowBackground">@color/transparency_grey</item>
+        <!-- отключаем оверлей содержимого окна -->
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowNoTitle">true</item> <!-- отключаем заголовок -->
+        <item name="android:windowIsFloating">true</item> <!-- окно в любой части экрана -->
+        <item name="android:backgroundDimEnabled">false</item> <!-- отключаем затемнение -->
+    </style>
 </resources>

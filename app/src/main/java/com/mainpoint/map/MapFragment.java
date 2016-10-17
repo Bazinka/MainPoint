@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
+import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,11 +19,13 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.mainpoint.R;
 import com.mainpoint.add_place.AddPlaceActivity;
+import com.mainpoint.utils.BitmapUtils;
 import com.mainpoint.utils.PermissionUtils;
 
 
@@ -79,7 +82,20 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
                     android.Manifest.permission.ACCESS_FINE_LOCATION, true);
         } else if (mMap != null) {
             mMap.setMyLocationEnabled(true);
+            mMap.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
+                @Override
+                public View getInfoWindow(Marker marker) {
+                    ContextThemeWrapper wrapper = new ContextThemeWrapper(getActivity(), R.style.TransparentBackground);
+                    LayoutInflater inflater = (LayoutInflater) wrapper.getSystemService(getActivity().LAYOUT_INFLATER_SERVICE);
+                    View layout = inflater.inflate(R.layout.map_info_window, null);
+                    return layout;
+                }
 
+                @Override
+                public View getInfoContents(Marker marker) {
+                    return null;
+                }
+            });
             LocationManager locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
             Location location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
 
@@ -124,13 +140,19 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
     @Override
     public void onMapClick(LatLng latLng) {
         mMap.clear();
-        mMap.addMarker(new MarkerOptions().position(latLng).title("Сохранить место?")).showInfoWindow();
+
+        MarkerOptions marker = new MarkerOptions()
+                .position(latLng)
+                .title("Сохранить место?")
+                .icon(BitmapDescriptorFactory.fromBitmap(BitmapUtils.getBitmapFromVectorDrawable(getContext(), R.drawable.ic_place)));
+
+        mMap.addMarker(marker).showInfoWindow();
     }
 
     @Override
     public void onInfoWindowClick(Marker marker) {
         Intent intent = new Intent(getActivity(), AddPlaceActivity.class);
         getActivity().startActivity(intent);
-        getActivity().overridePendingTransition( R.anim.slide_in_up, R.anim.slide_out_up );
+        getActivity().overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up);
     }
 }
