@@ -16,14 +16,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.realm.Realm;
-import io.realm.RealmConfiguration;
 
 public class PointListFragment extends Fragment {
 
     private OnPointsListClickListener mListener;
 
-
-    private Realm realm;
 
     public PointListFragment() {
     }
@@ -38,9 +35,6 @@ public class PointListFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        RealmConfiguration realmConfiguration = new RealmConfiguration.Builder().build();
-        Realm.deleteRealm(realmConfiguration);
-        realm = Realm.getInstance(realmConfiguration);
     }
 
 
@@ -53,12 +47,9 @@ public class PointListFragment extends Fragment {
         RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.points_list_recyclerview);
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
         List<Point> points;
-        if (realm != null && !realm.isClosed()) {
-            points = new ArrayList<>(realm.where(Point.class).findAll());
-            realm.close();
-        } else {
-            points = new ArrayList<>();
-        }
+        Realm realm = Realm.getDefaultInstance();
+        points = new ArrayList<>(realm.where(Point.class).findAll());
+        realm.close();
         recyclerView.setAdapter(new PointListRecyclerViewAdapter(points, mListener));
 
         return view;
