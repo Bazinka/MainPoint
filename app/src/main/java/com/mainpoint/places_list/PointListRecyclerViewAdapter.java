@@ -9,15 +9,16 @@ import android.widget.TextView;
 import com.mainpoint.R;
 import com.mainpoint.models.Point;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class PointListRecyclerViewAdapter extends RecyclerView.Adapter<PointListRecyclerViewAdapter.ViewHolder> {
 
-    private final List<Point> points;
-    private final PointListFragment.OnPointsListClickListener listener;
+    private List<Point> points;
+    private PointListFragment.OnPointsListClickListener listener;
 
-    public PointListRecyclerViewAdapter(List<Point> _points, PointListFragment.OnPointsListClickListener _listener) {
-        points = _points;
+    public PointListRecyclerViewAdapter(PointListFragment.OnPointsListClickListener _listener) {
+        points = new ArrayList<>();
         listener = _listener;
     }
 
@@ -44,6 +45,13 @@ public class PointListRecyclerViewAdapter extends RecyclerView.Adapter<PointList
     @Override
     public int getItemCount() {
         return points.size();
+    }
+
+    public void updatePointsList(List<Point> newListPoint) {
+        points.clear();
+        if (newListPoint != null) {
+            points.addAll(newListPoint);
+        }
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {

@@ -12,17 +12,14 @@ import android.view.ViewGroup;
 import com.mainpoint.R;
 import com.mainpoint.models.Point;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import io.realm.Realm;
-
-public class PointListFragment extends Fragment {
+public class PointListFragment extends Fragment implements PointListView {
 
     private OnPointsListClickListener mListener;
 
-
-    private Realm realm;
+    private PointListPresenter presenter;
+    private PointListRecyclerViewAdapter adapter;
 
     public PointListFragment() {
     }
@@ -37,13 +34,16 @@ public class PointListFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        realm = Realm.getDefaultInstance();
+        presenter = new PointListPresenterImpl(getActivity(), this);
+        presenter.onCreate();
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        realm.close();
+        if (presenter != null) {
+            presenter.onDestroy();
+        }
     }
 
     @Override
@@ -54,15 +54,21 @@ public class PointListFragment extends Fragment {
         Context context = view.getContext();
         RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.points_list_recyclerview);
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
-        List<Point> points;
-        if (realm != null && !realm.isClosed()) {
-            points = new ArrayList<>(realm.where(Point.class).findAll());
-        } else {
-            points = new ArrayList<>();
-        }
-        recyclerView.setAdapter(new PointListRecyclerViewAdapter(points, mListener));
 
+        adapter = new PointListRecyclerViewAdapter(mListener);
+        recyclerView.setAdapter(adapter);
+
+        if (presenter != null) {
+            presenter.getPoints();
+        }
         return view;
+    }
+
+    @Override
+    public void setListPoints(List<Point> pointsList) {
+        if (adapter != null) {
+            adapter.updatePointsList(pointsList);
+        }
     }
 
 

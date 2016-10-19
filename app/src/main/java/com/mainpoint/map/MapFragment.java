@@ -25,7 +25,7 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.mainpoint.BaseActivity;
 import com.mainpoint.R;
-import com.mainpoint.add_place.AddPlaceActivity;
+import com.mainpoint.add_place.AddPointActivity;
 import com.mainpoint.utils.BitmapUtils;
 import com.mainpoint.utils.PermissionUtils;
 
@@ -152,9 +152,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
 
     @Override
     public void onInfoWindowClick(Marker marker) {
-        Intent intent = new Intent(getActivity(), AddPlaceActivity.class);
-        intent.putExtra(AddPlaceActivity.PLACE_LATITUDE_KEY, marker.getPosition().latitude);
-        intent.putExtra(AddPlaceActivity.PLACE_LONGITUDE_KEY, marker.getPosition().longitude);
+        Intent intent = new Intent(getActivity(), AddPointActivity.class);
+        intent.putExtra(AddPointActivity.PLACE_LATITUDE_KEY, marker.getPosition().latitude);
+        intent.putExtra(AddPointActivity.PLACE_LONGITUDE_KEY, marker.getPosition().longitude);
         if (getActivity() instanceof BaseActivity) {
             ((BaseActivity) getActivity()).startActivityWithUpAnimation(intent);
         }
