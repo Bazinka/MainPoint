@@ -18,5 +18,7 @@
     <string name="save_place_title">Сохранить точку</string>
     <string name="points_list">points list</string>
     <string name="map">Карта</string>
+    <string name="points_on_map_title">Карта</string>
+    <string name="list_points_title">Список точек</string>
 
 </resources>

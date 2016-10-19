@@ -34,6 +34,7 @@ public class PointListFragment extends Fragment implements PointListView {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setRetainInstance(true);
         presenter = new PointListPresenterImpl(getActivity(), this);
         presenter.onCreate();
     }

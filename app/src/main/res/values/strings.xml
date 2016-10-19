@@ -18,5 +18,7 @@
     <string name="save_place_title">save place</string>
     <string name="points_list">points list</string>
     <string name="map">Map</string>
+    <string name="points_on_map_title">Points on the map</string>
+    <string name="list_points_title">List of points</string>
 
 </resources>

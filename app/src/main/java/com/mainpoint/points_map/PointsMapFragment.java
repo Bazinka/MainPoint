@@ -31,6 +31,7 @@ public class PointsMapFragment extends Fragment implements PointMapView, MapEven
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setRetainInstance(true);
         presenter = new PointMapPresenterImpl(getActivity(), this);
         presenter.onCreate();
     }

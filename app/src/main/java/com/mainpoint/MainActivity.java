@@ -47,6 +47,7 @@ public class MainActivity extends BaseActivity
     }
 
     void setPointsMapFragment() {
+        setTitle(getString(R.string.points_on_map_title));
         PointsMapFragment pointsMapmapFragment = PointsMapFragment.newInstance();
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.fragment_container, pointsMapmapFragment);
@@ -54,6 +55,7 @@ public class MainActivity extends BaseActivity
     }
 
     void setPointsListFragment() {
+        setTitle(getString(R.string.list_points_title));
         PointListFragment pointListFragment = PointListFragment.newInstance();
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.fragment_container, pointListFragment);
