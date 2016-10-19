@@ -1,4 +1,4 @@
-package com.mainpoint.map;
+package com.mainpoint.points_map;
 
 import android.content.Context;
 import android.content.Intent;
@@ -26,23 +26,32 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.mainpoint.BaseActivity;
 import com.mainpoint.R;
 import com.mainpoint.add_place.AddPointActivity;
+import com.mainpoint.models.Point;
 import com.mainpoint.utils.BitmapUtils;
 import com.mainpoint.utils.PermissionUtils;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleMap.OnMapClickListener,
-        GoogleMap.OnInfoWindowClickListener {
+
+public class MapViewFragment extends Fragment implements OnMapReadyCallback, GoogleMap.OnMapClickListener,
+        GoogleMap.OnInfoWindowClickListener, GoogleMap.OnMarkerClickListener {
 
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
 
     private boolean mPermissionDenied = false;
     private GoogleMap mMap;
 
-    public MapFragment() {
+    private Map<Marker, Point> markersToPointMap;
+    private Marker newPointMarker;
+    private MapEventListener mapEventListener;
+
+    public MapViewFragment() {
     }
 
-    public static MapFragment newInstance() {
-        MapFragment fragment = new MapFragment();
+    public static MapViewFragment newInstance() {
+        MapViewFragment fragment = new MapViewFragment();
         Bundle args = new Bundle();
         fragment.setArguments(args);
         return fragment;
@@ -51,8 +60,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-        }
     }
 
     @Override
@@ -71,8 +78,14 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
+
+        if (getParentFragment() instanceof PointsMapFragment) {
+            ((PointsMapFragment) getParentFragment()).loadPointsList();
+        }
+
         mMap.setOnMapClickListener(this);
         mMap.setOnInfoWindowClickListener(this);
+        mMap.setOnMarkerClickListener(this);
         enableMyLocation();
     }
 
@@ -86,9 +99,15 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
             mMap.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
                 @Override
                 public View getInfoWindow(Marker marker) {
-                    ContextThemeWrapper wrapper = new ContextThemeWrapper(getActivity(), R.style.TransparentBackground);
-                    LayoutInflater inflater = (LayoutInflater) wrapper.getSystemService(getActivity().LAYOUT_INFLATER_SERVICE);
-                    View layout = inflater.inflate(R.layout.map_info_window, null);
+                    View layout;
+                    Point point = markersToPointMap.get(marker);
+                    if (point == null) {
+                        ContextThemeWrapper wrapper = new ContextThemeWrapper(getActivity(), R.style.TransparentBackground);
+                        LayoutInflater inflater = (LayoutInflater) wrapper.getSystemService(getActivity().LAYOUT_INFLATER_SERVICE);
+                        layout = inflater.inflate(R.layout.add_point_map_info_window, null);
+                    } else {
+                        layout = LayoutInflater.from(getActivity()).inflate(R.layout.transparency_map_info_window, null);
+                    }
                     return layout;
                 }
 
@@ -131,6 +150,15 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
             showMissingPermissionError();
             mPermissionDenied = false;
         }
+        if (mMap != null) {
+            if (newPointMarker != null) {
+                newPointMarker.remove();
+                newPointMarker = null;
+            }
+            if (getParentFragment() instanceof PointsMapFragment) {
+                ((PointsMapFragment) getParentFragment()).loadPointsList();
+            }
+        }
     }
 
     private void showMissingPermissionError() {
@@ -140,23 +168,73 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
 
     @Override
     public void onMapClick(LatLng latLng) {
-        mMap.clear();
+        if (newPointMarker != null) {
+            newPointMarker.remove();
+        }
 
-        MarkerOptions marker = new MarkerOptions()
+        MarkerOptions markerOption = new MarkerOptions()
                 .position(latLng)
                 .title("Сохранить место?")
                 .icon(BitmapDescriptorFactory.fromBitmap(BitmapUtils.getBitmapFromVectorDrawable(getContext(), R.drawable.ic_pin)));
 
-        mMap.addMarker(marker).showInfoWindow();
+        newPointMarker = mMap.addMarker(markerOption);
+        newPointMarker.showInfoWindow();
+    }
+
+    void showPointsToMap(List<Point> points) {
+        if (mMap != null) {
+            if (markersToPointMap == null) {
+                markersToPointMap = new HashMap<>();
+            } else {
+                markersToPointMap.clear();
+            }
+
+            mMap.clear();
+
+            for (Point point : points) {
+                LatLng latLng = new LatLng(point.getLatityde(), point.getLongitude());
+                MarkerOptions markerOptions = new MarkerOptions()
+                        .position(latLng)
+                        .title(point.getName())
+                        .icon(BitmapDescriptorFactory.fromBitmap(BitmapUtils.getBitmapFromVectorDrawable(getContext(), R.drawable.ic_pin)));
+                Marker marker = mMap.addMarker(markerOptions);
+                markersToPointMap.put(marker, point);
+            }
+        }
     }
 
     @Override
     public void onInfoWindowClick(Marker marker) {
+        startAddPointActivity(marker);
+    }
+
+    @Override
+    public boolean onMarkerClick(Marker clickedMarker) {
+        if (markersToPointMap != null && markersToPointMap.get(clickedMarker) != null) {
+            if (newPointMarker != null) {
+                newPointMarker.remove();
+                newPointMarker = null;
+            }
+            Point point = markersToPointMap.get(clickedMarker);
+            if (mapEventListener != null) {
+                mapEventListener.onPointClick(point);
+            }
+        } else {
+            startAddPointActivity(newPointMarker);
+        }
+        return false;
+    }
+
+    void startAddPointActivity(Marker marker) {
         Intent intent = new Intent(getActivity(), AddPointActivity.class);
         intent.putExtra(AddPointActivity.PLACE_LATITUDE_KEY, marker.getPosition().latitude);
         intent.putExtra(AddPointActivity.PLACE_LONGITUDE_KEY, marker.getPosition().longitude);
         if (getActivity() instanceof BaseActivity) {
             ((BaseActivity) getActivity()).startActivityWithUpAnimation(intent);
         }
+    }
+
+    public void setMapEventListener(MapEventListener mapEventListener) {
+        this.mapEventListener = mapEventListener;
     }
 }

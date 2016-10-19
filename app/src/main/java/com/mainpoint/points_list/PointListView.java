@@ -1,4 +1,4 @@
-package com.mainpoint.places_list;
+package com.mainpoint.points_list;
 
 import com.mainpoint.models.Point;
 

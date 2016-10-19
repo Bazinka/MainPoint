@@ -12,13 +12,14 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.mainpoint.map.MapFragment;
-import com.mainpoint.places_list.PointListFragment;
+import com.mainpoint.points_list.PointListFragment;
+import com.mainpoint.points_map.PointsMapFragment;
 
 public class MainActivity extends BaseActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    int selectedNavigationId;
+    private int selectedNavigationId;
+    private Menu menu;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,9 +43,20 @@ public class MainActivity extends BaseActivity
 
         selectedNavigationId = R.id.nav_map;
         navigationView.setCheckedItem(selectedNavigationId);
-        MapFragment mapFragment = MapFragment.newInstance();
+        setPointsMapFragment();
+    }
+
+    void setPointsMapFragment() {
+        PointsMapFragment pointsMapmapFragment = PointsMapFragment.newInstance();
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.fragment_container, mapFragment);
+        transaction.replace(R.id.fragment_container, pointsMapmapFragment);
+        transaction.commit();
+    }
+
+    void setPointsListFragment() {
+        PointListFragment pointListFragment = PointListFragment.newInstance();
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.fragment_container, pointListFragment);
         transaction.commit();
     }
 
@@ -59,9 +71,10 @@ public class MainActivity extends BaseActivity
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
+    public boolean onCreateOptionsMenu(Menu _menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
+        getMenuInflater().inflate(R.menu.main, _menu);
+        menu = _menu;
         return true;
     }
 
@@ -75,17 +88,11 @@ public class MainActivity extends BaseActivity
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_points_list) {
             if (selectedNavigationId == R.id.nav_map) {
-                PointListFragment pointListFragment = PointListFragment.newInstance();
-                FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-                transaction.replace(R.id.fragment_container, pointListFragment);
-                transaction.commit();
+                setPointsListFragment();
                 item.setIcon(R.drawable.ic_map_points);
                 selectedNavigationId = R.id.nav_place_list;
             } else if (selectedNavigationId == R.id.nav_place_list) {
-                MapFragment mapFragment = MapFragment.newInstance();
-                FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-                transaction.replace(R.id.fragment_container, mapFragment);
-                transaction.commit();
+                setPointsMapFragment();
                 item.setIcon(R.drawable.ic_list_points);
                 selectedNavigationId = R.id.nav_map;
             }
@@ -107,16 +114,17 @@ public class MainActivity extends BaseActivity
         // Handle navigation view item clicks here.
         selectedNavigationId = item.getItemId();
 
+        MenuItem upMenuItem = menu.findItem(R.id.action_points_list);
         if (selectedNavigationId == R.id.nav_map) {
-            MapFragment mapFragment = MapFragment.newInstance();
-            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-            transaction.replace(R.id.fragment_container, mapFragment);
-            transaction.commit();
+            setPointsMapFragment();
+            if (upMenuItem != null) {
+                upMenuItem.setIcon(R.drawable.ic_list_points);
+            }
         } else if (selectedNavigationId == R.id.nav_place_list) {
-            PointListFragment pointListFragment = PointListFragment.newInstance();
-            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-            transaction.replace(R.id.fragment_container, pointListFragment);
-            transaction.commit();
+            setPointsListFragment();
+            if (upMenuItem != null) {
+                upMenuItem.setIcon(R.drawable.ic_map_points);
+            }
         } else if (selectedNavigationId == R.id.nav_slideshow) {
 
         } else if (selectedNavigationId == R.id.nav_manage) {
