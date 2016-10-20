@@ -1,6 +1,7 @@
 package com.mainpoint;
 
 import android.os.Bundle;
+import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
@@ -16,7 +17,7 @@ import com.mainpoint.points_list.PointListFragment;
 import com.mainpoint.points_map.PointsMapFragment;
 
 public class MainActivity extends BaseActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener, PointsMapFragment.PointsMapEventsListener {
 
     private int selectedNavigationId;
     private Menu menu;
@@ -27,10 +28,6 @@ public class MainActivity extends BaseActivity
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(view -> Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                .setAction("Action", null).show());
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -49,6 +46,7 @@ public class MainActivity extends BaseActivity
     void setPointsMapFragment() {
         setTitle(getString(R.string.points_on_map_title));
         PointsMapFragment pointsMapmapFragment = PointsMapFragment.newInstance();
+        pointsMapmapFragment.setEventListener(this);
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.fragment_container, pointsMapmapFragment);
         transaction.commit();
@@ -74,7 +72,6 @@ public class MainActivity extends BaseActivity
 
     @Override
     public boolean onCreateOptionsMenu(Menu _menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, _menu);
         menu = _menu;
         return true;
@@ -82,9 +79,6 @@ public class MainActivity extends BaseActivity
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
@@ -140,5 +134,13 @@ public class MainActivity extends BaseActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    @Override
+    public void onBottomSheetDraggling(boolean isBottomSheetCollapsed) {
+        AppBarLayout appBarLayout = (AppBarLayout) findViewById(R.id.main_appbarlayout);
+        if (appBarLayout != null) {
+            appBarLayout.setExpanded(isBottomSheetCollapsed);
+        }
     }
 }
