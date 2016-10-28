@@ -32,29 +32,36 @@
 
     </RelativeLayout>
 
+
     <RelativeLayout
         android:id="@+id/map_bottom_sheet"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/colorAccent"
-        android:paddingBottom="@dimen/activity_vertical_margin"
-        android:paddingLeft="@dimen/activity_horizontal_margin"
-        android:paddingRight="@dimen/activity_horizontal_margin"
-        android:paddingTop="@dimen/activity_vertical_margin"
         app:behavior_hideable="true"
+        android:background="@color/white"
+        android:visibility="invisible"
         app:behavior_peekHeight="200dp"
         app:elevation="4dp"
         app:layout_behavior="@string/bottom_sheet_behavior">
 
-        <TextView
-            android:id="@+id/bottomsheet_text"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:text="Introducing Bottom Sheets"
-            android:textColor="#FFFFFF" />
+        <android.support.v4.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:padding="10dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Какой-то текст" />
+
+            </LinearLayout>
+        </android.support.v4.widget.NestedScrollView>
     </RelativeLayout>
-
 
 </android.support.design.widget.CoordinatorLayout>
 

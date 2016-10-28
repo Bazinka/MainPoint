@@ -7,6 +7,7 @@ import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,10 +22,8 @@ public class PointsMapFragment extends Fragment implements PointMapView, MapEven
 
     private PointMapPresenter presenter;
 
-    private PointsMapEventsListener eventListener;
-    private boolean isBottomSheetCollapsed = true;
-
     private BottomSheetBehavior behavior;
+    private ViewGroup mainView;
 
     public PointsMapFragment() {
     }
@@ -56,7 +55,7 @@ public class PointsMapFragment extends Fragment implements PointMapView, MapEven
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        ViewGroup mainView = (ViewGroup) inflater.inflate(R.layout.fragment_points_map, container, false);
+        mainView = (ViewGroup) inflater.inflate(R.layout.fragment_points_map, container, false);
 
         FloatingActionButton fab = (FloatingActionButton) mainView.findViewById(R.id.fab);
         fab.setOnClickListener(view -> Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
@@ -76,27 +75,19 @@ public class PointsMapFragment extends Fragment implements PointMapView, MapEven
                     case BottomSheetBehavior.STATE_DRAGGING:
                         break;
                     case BottomSheetBehavior.STATE_EXPANDED:
-                        isBottomSheetCollapsed = false;
-
                         break;
                     case BottomSheetBehavior.STATE_COLLAPSED:
-                        isBottomSheetCollapsed = true;
                         break;
                     case BottomSheetBehavior.STATE_HIDDEN:
-                        isBottomSheetCollapsed = true;
                         break;
-                }
-                if (eventListener != null) {
-                    eventListener.onBottomSheetDraggling(isBottomSheetCollapsed);
                 }
             }
 
             @Override
             public void onSlide(@NonNull View bottomSheet, float slideOffset) {
-//                Log.i("BottomSheetCallback", "slideOffset: " + slideOffset);
+                Log.i("BottomSheetCallback", "slideOffset: " + slideOffset);
             }
         });
-
         return mainView;
     }
 
@@ -118,15 +109,9 @@ public class PointsMapFragment extends Fragment implements PointMapView, MapEven
     @Override
     public void onPointClick(Point point) {
         Toast.makeText(getActivity(), "onPointClick on point " + point.getName(), Toast.LENGTH_LONG).show();
+        View bottomSheet = mainView.findViewById(R.id.map_bottom_sheet);
+        bottomSheet.setVisibility(View.VISIBLE);
+//        bottomSheet.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.colorPrimary));
         behavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
-
-    }
-
-    public void setEventListener(PointsMapEventsListener eventListener) {
-        this.eventListener = eventListener;
-    }
-
-    public interface PointsMapEventsListener {
-        void onBottomSheetDraggling(boolean isBottomSheetCollapsed);
     }
 }

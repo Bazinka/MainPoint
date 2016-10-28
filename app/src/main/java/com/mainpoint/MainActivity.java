@@ -1,10 +1,7 @@
 package com.mainpoint;
 
 import android.os.Bundle;
-import android.support.design.widget.AppBarLayout;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -17,7 +14,7 @@ import com.mainpoint.points_list.PointListFragment;
 import com.mainpoint.points_map.PointsMapFragment;
 
 public class MainActivity extends BaseActivity
-        implements NavigationView.OnNavigationItemSelectedListener, PointsMapFragment.PointsMapEventsListener {
+        implements NavigationView.OnNavigationItemSelectedListener {
 
     private int selectedNavigationId;
     private Menu menu;
@@ -46,7 +43,6 @@ public class MainActivity extends BaseActivity
     void setPointsMapFragment() {
         setTitle(getString(R.string.points_on_map_title));
         PointsMapFragment pointsMapmapFragment = PointsMapFragment.newInstance();
-        pointsMapmapFragment.setEventListener(this);
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.fragment_container, pointsMapmapFragment);
         transaction.commit();
@@ -134,13 +130,5 @@ public class MainActivity extends BaseActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
-    }
-
-    @Override
-    public void onBottomSheetDraggling(boolean isBottomSheetCollapsed) {
-        AppBarLayout appBarLayout = (AppBarLayout) findViewById(R.id.main_appbarlayout);
-        if (appBarLayout != null) {
-            appBarLayout.setExpanded(isBottomSheetCollapsed);
-        }
     }
 }

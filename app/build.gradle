@@ -10,10 +10,12 @@ android {
         applicationId "com.mainpoint"
         minSdkVersion 14
         targetSdkVersion 23
+        
         versionCode 1
         versionName "1.0"
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
         vectorDrawables.useSupportLibrary = true
+        multiDexEnabled true
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
