@@ -17,9 +17,8 @@ public class PointListRecyclerViewAdapter extends RecyclerView.Adapter<PointList
     private List<Point> points;
     private PointListFragment.OnPointsListClickListener listener;
 
-    public PointListRecyclerViewAdapter(PointListFragment.OnPointsListClickListener _listener) {
+    public PointListRecyclerViewAdapter() {
         points = new ArrayList<>();
-        listener = _listener;
     }
 
     @Override
@@ -52,6 +51,10 @@ public class PointListRecyclerViewAdapter extends RecyclerView.Adapter<PointList
         if (newListPoint != null) {
             points.addAll(newListPoint);
         }
+    }
+
+    public void setClickListener(PointListFragment.OnPointsListClickListener listener) {
+        this.listener = listener;
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {

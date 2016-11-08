@@ -16,10 +16,9 @@ import java.util.List;
 
 public class PointListFragment extends Fragment implements PointListView {
 
-    private OnPointsListClickListener mListener;
-
     private PointListPresenter presenter;
     private PointListRecyclerViewAdapter adapter;
+    private OnPointsListClickListener listener;
 
     public PointListFragment() {
     }
@@ -56,7 +55,10 @@ public class PointListFragment extends Fragment implements PointListView {
         RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.points_list_recyclerview);
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
 
-        adapter = new PointListRecyclerViewAdapter(mListener);
+        adapter = new PointListRecyclerViewAdapter();
+        if (listener != null) {
+            adapter.setClickListener(listener);
+        }
         recyclerView.setAdapter(adapter);
 
         if (presenter != null) {
@@ -69,6 +71,13 @@ public class PointListFragment extends Fragment implements PointListView {
     public void setListPoints(List<Point> pointsList) {
         if (adapter != null) {
             adapter.updatePointsList(pointsList);
+        }
+    }
+
+    public void setOnPointClickListener(OnPointsListClickListener _listener) {
+        listener = _listener;
+        if (adapter != null) {
+            adapter.setClickListener(_listener);
         }
     }
 

@@ -37,9 +37,10 @@
         android:id="@+id/map_bottom_sheet"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:behavior_hideable="true"
         android:background="@color/white"
-        android:visibility="invisible"
+        android:padding="10dp"
+        android:visibility="visible"
+        app:behavior_hideable="true"
         app:behavior_peekHeight="200dp"
         app:elevation="4dp"
         app:layout_behavior="@string/bottom_sheet_behavior">
@@ -54,10 +55,23 @@
                 android:orientation="vertical">
 
                 <TextView
-                    android:padding="10dp"
+                    android:id="@+id/name_place_text_view"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Какой-то текст" />
+                    android:layout_marginTop="10dp"
+                    android:gravity="center_vertical"
+                    android:text="Название точки"
+                    android:textSize="@dimen/large_title_text_size"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/desc_place_text_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:lines="4"
+                    android:text="Название точки"
+                    android:textSize="@dimen/meduim_text_size" />
 
             </LinearLayout>
         </android.support.v4.widget.NestedScrollView>

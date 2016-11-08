@@ -11,7 +11,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
+import android.widget.TextView;
 
 import com.mainpoint.R;
 import com.mainpoint.models.Point;
@@ -20,10 +20,13 @@ import java.util.List;
 
 public class PointsMapFragment extends Fragment implements PointMapView, MapEventListener {
 
+    private static final String SELECTED_POINT_KEY = "SELECTED_POINT_KEY";
     private PointMapPresenter presenter;
 
     private BottomSheetBehavior behavior;
     private ViewGroup mainView;
+
+    private Point selectedPoint;
 
     public PointsMapFragment() {
     }
@@ -31,7 +34,16 @@ public class PointsMapFragment extends Fragment implements PointMapView, MapEven
     public static PointsMapFragment newInstance() {
         PointsMapFragment fragment = new PointsMapFragment();
         Bundle args = new Bundle();
+        fragment.setArguments(args);
+        return fragment;
+    }
 
+    public static PointsMapFragment newInstance(Point point) {
+        PointsMapFragment fragment = new PointsMapFragment();
+        Bundle args = new Bundle();
+        if (point != null) {
+            args.putSerializable(SELECTED_POINT_KEY, point);
+        }
         fragment.setArguments(args);
         return fragment;
     }
@@ -40,6 +52,9 @@ public class PointsMapFragment extends Fragment implements PointMapView, MapEven
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
+        if (getArguments() != null) {
+            selectedPoint = (Point) getArguments().getSerializable(SELECTED_POINT_KEY);
+        }
         presenter = new PointMapPresenterImpl(getActivity(), this);
         presenter.onCreate();
     }
@@ -88,6 +103,10 @@ public class PointsMapFragment extends Fragment implements PointMapView, MapEven
                 Log.i("BottomSheetCallback", "slideOffset: " + slideOffset);
             }
         });
+
+        if (selectedPoint != null) {
+            onPointClick(selectedPoint);
+        }
         return mainView;
     }
 
@@ -108,10 +127,19 @@ public class PointsMapFragment extends Fragment implements PointMapView, MapEven
 
     @Override
     public void onPointClick(Point point) {
-        Toast.makeText(getActivity(), "onPointClick on point " + point.getName(), Toast.LENGTH_LONG).show();
-        View bottomSheet = mainView.findViewById(R.id.map_bottom_sheet);
-        bottomSheet.setVisibility(View.VISIBLE);
+        if (point != null) {
+            View bottomSheet = mainView.findViewById(R.id.map_bottom_sheet);
+            bottomSheet.setVisibility(View.VISIBLE);
 //        bottomSheet.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.colorPrimary));
-        behavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+            behavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+
+            TextView nameTextView = (TextView) bottomSheet.findViewById(R.id.name_place_text_view);
+            nameTextView.setText(point.getName());
+
+            TextView descTextView = (TextView) bottomSheet.findViewById(R.id.desc_place_text_view);
+            descTextView.setText(point.getComments());
+
+            selectedPoint = null;
+        }
     }
 }

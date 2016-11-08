@@ -10,6 +10,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.mainpoint.models.Point;
 import com.mainpoint.points_list.PointListFragment;
 import com.mainpoint.points_map.PointsMapFragment;
 
@@ -40,11 +41,19 @@ public class MainActivity extends BaseActivity
         setPointsMapFragment();
     }
 
+    void setPointsMapFragment(Point selectedPoint) {
+        setTitle(getString(R.string.points_on_map_title));
+        PointsMapFragment pointsMapFragment = PointsMapFragment.newInstance(selectedPoint);
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.fragment_container, pointsMapFragment);
+        transaction.commit();
+    }
+
     void setPointsMapFragment() {
         setTitle(getString(R.string.points_on_map_title));
-        PointsMapFragment pointsMapmapFragment = PointsMapFragment.newInstance();
+        PointsMapFragment pointsMapFragment = PointsMapFragment.newInstance();
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.fragment_container, pointsMapmapFragment);
+        transaction.replace(R.id.fragment_container, pointsMapFragment);
         transaction.commit();
     }
 
@@ -54,6 +63,9 @@ public class MainActivity extends BaseActivity
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.fragment_container, pointListFragment);
         transaction.commit();
+        pointListFragment.setOnPointClickListener(item -> {
+            setPointsMapFragment(item);
+        });
     }
 
     @Override

@@ -4,6 +4,8 @@ import android.support.annotation.NonNull;
 
 import org.joda.time.LocalDateTime;
 
+import java.io.Serializable;
+
 import io.realm.RealmObject;
 import io.realm.annotations.Ignore;
 import io.realm.annotations.PrimaryKey;
@@ -12,7 +14,7 @@ import io.realm.annotations.PrimaryKey;
  * Created by DariaEfimova on 17.10.16.
  */
 
-public class Point extends RealmObject {
+public class Point extends RealmObject implements Serializable {
 
     @PrimaryKey
     private long id;
