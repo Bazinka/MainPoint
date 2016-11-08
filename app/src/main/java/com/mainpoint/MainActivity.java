@@ -64,7 +64,17 @@ public class MainActivity extends BaseActivity
         transaction.replace(R.id.fragment_container, pointListFragment);
         transaction.commit();
         pointListFragment.setOnPointClickListener(item -> {
+            if (menu != null) {
+                MenuItem menuItem = menu.findItem(R.id.action_points_list);
+                if (menuItem != null) {
+                    menuItem.setIcon(R.drawable.ic_list_points);
+                }
+            }
+            selectedNavigationId = R.id.nav_map;
             setPointsMapFragment(item);
+
+            NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+            navigationView.setCheckedItem(selectedNavigationId);
         });
     }
 

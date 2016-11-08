@@ -4,13 +4,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    app:layout_behavior="@string/appbar_scrolling_view_behavior">
+    android:fitsSystemWindows="true">
 
     <RelativeLayout
         android:id="@+id/content_main"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+        android:layout_height="match_parent">
 
         <fragment
             android:id="@+id/map"
@@ -38,8 +37,10 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/white"
+        android:fitsSystemWindows="true"
         android:padding="10dp"
-        android:visibility="visible"
+        android:layout_marginTop="?attr/actionBarSize"
+        android:visibility="invisible"
         app:behavior_hideable="true"
         app:behavior_peekHeight="200dp"
         app:elevation="4dp"

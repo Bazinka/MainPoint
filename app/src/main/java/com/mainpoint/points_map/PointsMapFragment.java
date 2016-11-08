@@ -76,11 +76,6 @@ public class PointsMapFragment extends Fragment implements PointMapView, MapEven
         fab.setOnClickListener(view -> Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                 .setAction("Action", null).show());
 
-        MapViewFragment mapViewFragment = (MapViewFragment) getChildFragmentManager()
-                .findFragmentById(R.id.map);
-        if (mapViewFragment != null) {
-            mapViewFragment.setMapEventListener(this);
-        }
         View bottomSheet = mainView.findViewById(R.id.map_bottom_sheet);
         behavior = BottomSheetBehavior.from(bottomSheet);
         behavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
@@ -103,9 +98,14 @@ public class PointsMapFragment extends Fragment implements PointMapView, MapEven
                 Log.i("BottomSheetCallback", "slideOffset: " + slideOffset);
             }
         });
-
-        if (selectedPoint != null) {
-            onPointClick(selectedPoint);
+        MapViewFragment mapViewFragment = (MapViewFragment) getChildFragmentManager()
+                .findFragmentById(R.id.map);
+        if (mapViewFragment != null) {
+            mapViewFragment.setMapEventListener(this);
+            if (selectedPoint != null) {
+//                onPointClick(selectedPoint);
+                mapViewFragment.setSelectedPoint(selectedPoint);
+            }
         }
         return mainView;
     }

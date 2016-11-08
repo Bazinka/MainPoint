@@ -45,6 +45,9 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Goo
 
     private Map<Marker, Point> markersToPointMap;
     private Marker newPointMarker;
+    private Marker prevSelectedMarker;
+    private Point selectedPoint;
+
     private MapEventListener mapEventListener;
 
     public MapViewFragment() {
@@ -119,7 +122,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Goo
             LocationManager locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
             Location location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
 
-            if (location != null) {
+            if (location != null && selectedPoint == null) {
                 LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
                 CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 15);
                 mMap.animateCamera(cameraUpdate);
@@ -172,16 +175,20 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Goo
             newPointMarker.remove();
         }
 
+        if (prevSelectedMarker != null) {
+            prevSelectedMarker.setIcon(BitmapDescriptorFactory.fromBitmap(BitmapUtils.getBitmapFromVectorDrawable(getContext(), R.drawable.ic_pin)));
+            prevSelectedMarker = null;
+        }
         MarkerOptions markerOption = new MarkerOptions()
                 .position(latLng)
                 .title("Сохранить место?")
-                .icon(BitmapDescriptorFactory.fromBitmap(BitmapUtils.getBitmapFromVectorDrawable(getContext(), R.drawable.ic_pin)));
+                .icon(BitmapDescriptorFactory.fromBitmap(BitmapUtils.getBitmapFromVectorDrawable(getContext(), R.drawable.ic_selected_pin)));
 
         newPointMarker = mMap.addMarker(markerOption);
         newPointMarker.showInfoWindow();
     }
 
-    void showPointsToMap(List<Point> points) {
+    public void showPointsToMap(List<Point> points) {
         if (mMap != null) {
             if (markersToPointMap == null) {
                 markersToPointMap = new HashMap<>();
@@ -200,6 +207,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Goo
                 Marker marker = mMap.addMarker(markerOptions);
                 markersToPointMap.put(marker, point);
             }
+            showSelectedPoint();
         }
     }
 
@@ -215,6 +223,14 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Goo
                 newPointMarker.remove();
                 newPointMarker = null;
             }
+            if (prevSelectedMarker != null) {
+                prevSelectedMarker.setIcon(BitmapDescriptorFactory.fromBitmap(BitmapUtils.getBitmapFromVectorDrawable(getContext(), R.drawable.ic_pin)));
+            }
+            prevSelectedMarker = clickedMarker;
+            prevSelectedMarker.setIcon(BitmapDescriptorFactory.fromBitmap(BitmapUtils.getBitmapFromVectorDrawable(getContext(), R.drawable.ic_selected_pin)));
+            CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(prevSelectedMarker.getPosition(), 15);
+            mMap.animateCamera(cameraUpdate);
+
             Point point = markersToPointMap.get(clickedMarker);
             if (mapEventListener != null) {
                 mapEventListener.onPointClick(point);
@@ -223,6 +239,20 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Goo
             startAddPointActivity(newPointMarker);
         }
         return false;
+    }
+
+    public void setSelectedPoint(Point point) {
+        selectedPoint = point;
+    }
+
+    public void showSelectedPoint() {
+        if (selectedPoint != null && markersToPointMap != null) {
+            for (Map.Entry<Marker, Point> entry : markersToPointMap.entrySet()) {
+                if (entry.getValue().getId() == selectedPoint.getId()) {
+                    onMarkerClick(entry.getKey());
+                }
+            }
+        }
     }
 
     void startAddPointActivity(Marker marker) {
