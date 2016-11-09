@@ -70,22 +70,19 @@ public class NewPointMapView extends Fragment implements OnMapReadyCallback, Goo
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        ViewGroup mainView =  (ViewGroup) inflater.inflate(R.layout.fragment_new_points_map, container, false);
+        ViewGroup mainView = (ViewGroup) inflater.inflate(R.layout.fragment_new_points_map, container, false);
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager()
                 .findFragmentById(R.id.map);
         if (mapFragment != null) {
             mapFragment.getMapAsync(this);
-            // Get the button view
+            // Get the location button view
             View locationButton = ((View) mapFragment.getView().findViewById(1).getParent()).findViewById(2);
 
-            // and next place it, for exemple, on bottom right (as Google Maps app)
             RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) locationButton.getLayoutParams();
-            // position on right bottom
-            params.addRule(RelativeLayout.ALIGN_PARENT_RIGHT, RelativeLayout.TRUE);
-            params.addRule(RelativeLayout.CENTER_VERTICAL, RelativeLayout.TRUE);
-            params.setMargins(0, 0, 20, 20);
-            locationButton.setLayoutParams(params);
+            params.addRule(RelativeLayout.ALIGN_PARENT_TOP, 0);
+            params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, RelativeLayout.TRUE);
+            params.setMargins(0, 0, 30, 30);
         }
 
 

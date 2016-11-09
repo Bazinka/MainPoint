@@ -51,7 +51,7 @@ public class MainActivity extends BaseActivity
 
     void startNewPointActivity() {
         Intent intent = new Intent(this, SearchNewPointActivity.class);
-        startActivityWithUpAnimation(intent);
+        startActivityWithLeftAnimation(intent);
     }
 
     void setPointsMapFragment(Point selectedPoint) {
