@@ -20,5 +20,6 @@
     <string name="map">Карта</string>
     <string name="points_on_map_title">Карта</string>
     <string name="list_points_title">Список точек</string>
+    <string name="search_new_place_title">Поиск нового места</string>
 
 </resources>

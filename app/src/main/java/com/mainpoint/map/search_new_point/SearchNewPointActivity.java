@@ -12,5 +12,6 @@ public class SearchNewPointActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search_new_point);
         setNavigationArrow();
+        setTitle(getString(R.string.search_new_place_title));
     }
 }
