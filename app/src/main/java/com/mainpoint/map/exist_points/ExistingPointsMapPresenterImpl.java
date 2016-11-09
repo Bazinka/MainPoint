@@ -1,10 +1,8 @@
-package com.mainpoint.points_map;
+package com.mainpoint.map.exist_points;
 
 import android.content.Context;
 
 import com.mainpoint.models.Point;
-import com.mainpoint.points_list.PointListPresenter;
-import com.mainpoint.points_list.PointListView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,14 +13,12 @@ import io.realm.Realm;
  * Created by DariaEfimova on 19.10.16.
  */
 
-public class PointMapPresenterImpl implements PointMapPresenter {
+public class ExistingPointsMapPresenterImpl implements ExistingPointsMapPresenter {
 
     private Realm realm;
-    private PointMapView mainView;
-    private Context context;
+    private ExistingPointsMapView mainView;
 
-    public PointMapPresenterImpl(Context contex, PointMapView mainView) {
-        this.context = contex;
+    public ExistingPointsMapPresenterImpl(Context contex, ExistingPointsMapView mainView) {
         this.mainView = mainView;
     }
 

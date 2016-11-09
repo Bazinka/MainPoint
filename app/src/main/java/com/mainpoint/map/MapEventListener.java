@@ -1,4 +1,4 @@
-package com.mainpoint.points_map;
+package com.mainpoint.map;
 
 import com.mainpoint.models.Point;
 

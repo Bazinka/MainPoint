@@ -1,4 +1,4 @@
-package com.mainpoint.add_place;
+package com.mainpoint.add_point;
 
 /**
  * Created by DariaEfimova on 19.10.16.

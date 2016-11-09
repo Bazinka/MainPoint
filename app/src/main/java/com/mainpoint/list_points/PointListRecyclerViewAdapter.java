@@ -1,4 +1,4 @@
-package com.mainpoint.points_list;
+package com.mainpoint.list_points;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;

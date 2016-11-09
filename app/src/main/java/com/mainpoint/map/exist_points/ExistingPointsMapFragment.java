@@ -1,11 +1,9 @@
-package com.mainpoint.points_map;
+package com.mainpoint.map.exist_points;
 
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetBehavior;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -14,32 +12,33 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.mainpoint.R;
+import com.mainpoint.map.MapEventListener;
 import com.mainpoint.models.Point;
 
 import java.util.List;
 
-public class PointsMapFragment extends Fragment implements PointMapView, MapEventListener {
+public class ExistingPointsMapFragment extends Fragment implements ExistingPointsMapView, MapEventListener {
 
     private static final String SELECTED_POINT_KEY = "SELECTED_POINT_KEY";
-    private PointMapPresenter presenter;
+    private ExistingPointsMapPresenter presenter;
 
     private BottomSheetBehavior behavior;
     private ViewGroup mainView;
 
     private Point selectedPoint;
 
-    public PointsMapFragment() {
+    public ExistingPointsMapFragment() {
     }
 
-    public static PointsMapFragment newInstance() {
-        PointsMapFragment fragment = new PointsMapFragment();
+    public static ExistingPointsMapFragment newInstance() {
+        ExistingPointsMapFragment fragment = new ExistingPointsMapFragment();
         Bundle args = new Bundle();
         fragment.setArguments(args);
         return fragment;
     }
 
-    public static PointsMapFragment newInstance(Point point) {
-        PointsMapFragment fragment = new PointsMapFragment();
+    public static ExistingPointsMapFragment newInstance(Point point) {
+        ExistingPointsMapFragment fragment = new ExistingPointsMapFragment();
         Bundle args = new Bundle();
         if (point != null) {
             args.putSerializable(SELECTED_POINT_KEY, point);
@@ -55,7 +54,7 @@ public class PointsMapFragment extends Fragment implements PointMapView, MapEven
         if (getArguments() != null) {
             selectedPoint = (Point) getArguments().getSerializable(SELECTED_POINT_KEY);
         }
-        presenter = new PointMapPresenterImpl(getActivity(), this);
+        presenter = new ExistingPointsMapPresenterImpl(getActivity(), this);
         presenter.onCreate();
     }
 
@@ -70,11 +69,7 @@ public class PointsMapFragment extends Fragment implements PointMapView, MapEven
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        mainView = (ViewGroup) inflater.inflate(R.layout.fragment_points_map, container, false);
-
-        FloatingActionButton fab = (FloatingActionButton) mainView.findViewById(R.id.fab);
-        fab.setOnClickListener(view -> Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                .setAction("Action", null).show());
+        mainView = (ViewGroup) inflater.inflate(R.layout.fragment_existing_points_map, container, false);
 
         View bottomSheet = mainView.findViewById(R.id.map_bottom_sheet);
         behavior = BottomSheetBehavior.from(bottomSheet);
@@ -98,13 +93,13 @@ public class PointsMapFragment extends Fragment implements PointMapView, MapEven
                 Log.i("BottomSheetCallback", "slideOffset: " + slideOffset);
             }
         });
-        MapViewFragment mapViewFragment = (MapViewFragment) getChildFragmentManager()
-                .findFragmentById(R.id.map);
-        if (mapViewFragment != null) {
-            mapViewFragment.setMapEventListener(this);
+        PointsMapView pointsMapView = (PointsMapView) getChildFragmentManager()
+                .findFragmentById(R.id.points_map_view);
+        if (pointsMapView != null) {
+            pointsMapView.setMapEventListener(this);
             if (selectedPoint != null) {
 //                onPointClick(selectedPoint);
-                mapViewFragment.setSelectedPoint(selectedPoint);
+                pointsMapView.setSelectedPoint(selectedPoint);
             }
         }
         return mainView;
@@ -112,10 +107,10 @@ public class PointsMapFragment extends Fragment implements PointMapView, MapEven
 
     @Override
     public void setListPointsToMap(List<Point> pointsList) {
-        MapViewFragment mapViewFragment = (MapViewFragment) getChildFragmentManager()
-                .findFragmentById(R.id.map);
-        if (mapViewFragment != null) {
-            mapViewFragment.showPointsToMap(pointsList);
+        PointsMapView pointsMapView = (PointsMapView) getChildFragmentManager()
+                .findFragmentById(R.id.points_map_view);
+        if (pointsMapView != null) {
+            pointsMapView.showPointsToMap(pointsList);
         }
     }
 

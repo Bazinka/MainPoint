@@ -1,6 +1,8 @@
 package com.mainpoint;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
@@ -10,9 +12,10 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.mainpoint.list_points.PointListFragment;
+import com.mainpoint.map.exist_points.ExistingPointsMapFragment;
+import com.mainpoint.map.search_new_point.SearchNewPointActivity;
 import com.mainpoint.models.Point;
-import com.mainpoint.points_list.PointListFragment;
-import com.mainpoint.points_map.PointsMapFragment;
 
 public class MainActivity extends BaseActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -39,21 +42,31 @@ public class MainActivity extends BaseActivity
         selectedNavigationId = R.id.nav_map;
         navigationView.setCheckedItem(selectedNavigationId);
         setPointsMapFragment();
+
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.add_point_fab);
+        fab.setOnClickListener(view -> {
+            startNewPointActivity();
+        });
+    }
+
+    void startNewPointActivity() {
+        Intent intent = new Intent(this, SearchNewPointActivity.class);
+        startActivityWithUpAnimation(intent);
     }
 
     void setPointsMapFragment(Point selectedPoint) {
         setTitle(getString(R.string.points_on_map_title));
-        PointsMapFragment pointsMapFragment = PointsMapFragment.newInstance(selectedPoint);
+        ExistingPointsMapFragment existingPointsMapFragment = ExistingPointsMapFragment.newInstance(selectedPoint);
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.fragment_container, pointsMapFragment);
+        transaction.replace(R.id.fragment_container, existingPointsMapFragment);
         transaction.commit();
     }
 
     void setPointsMapFragment() {
         setTitle(getString(R.string.points_on_map_title));
-        PointsMapFragment pointsMapFragment = PointsMapFragment.newInstance();
+        ExistingPointsMapFragment existingPointsMapFragment = ExistingPointsMapFragment.newInstance();
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.fragment_container, pointsMapFragment);
+        transaction.replace(R.id.fragment_container, existingPointsMapFragment);
         transaction.commit();
     }
 

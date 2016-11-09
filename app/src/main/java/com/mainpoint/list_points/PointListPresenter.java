@@ -1,4 +1,4 @@
-package com.mainpoint.points_list;
+package com.mainpoint.list_points;
 
 /**
  * Created by DariaEfimova on 19.10.16.

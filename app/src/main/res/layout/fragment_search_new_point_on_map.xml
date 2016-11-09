@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true">
@@ -12,34 +11,22 @@
         android:layout_height="match_parent">
 
         <fragment
-            android:id="@+id/map"
-            android:name="com.mainpoint.points_map.MapViewFragment"
+            android:id="@+id/new_point_map"
+            android:name="com.mainpoint.map.search_new_point.NewPointMapView"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            tools:context="com.mainpoint.MapsFragment" />
-
-        <android.support.design.widget.FloatingActionButton
-            android:id="@+id/fab"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentRight="true"
-            android:layout_margin="@dimen/fab_margin"
-            android:visibility="gone"
-            app:srcCompat="@android:drawable/ic_dialog_email" />
-
+            android:layout_height="match_parent" />
 
     </RelativeLayout>
 
 
     <RelativeLayout
-        android:id="@+id/map_bottom_sheet"
+        android:id="@+id/new_point_map_bottom_sheet"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginTop="?attr/actionBarSize"
         android:background="@color/white"
         android:fitsSystemWindows="true"
         android:padding="10dp"
-        android:layout_marginTop="?attr/actionBarSize"
         android:visibility="invisible"
         app:behavior_hideable="true"
         app:behavior_peekHeight="200dp"
@@ -56,7 +43,7 @@
                 android:orientation="vertical">
 
                 <TextView
-                    android:id="@+id/name_place_text_view"
+                    android:id="@+id/new_point_name_place_text_view"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
@@ -66,7 +53,7 @@
                     android:textStyle="bold" />
 
                 <TextView
-                    android:id="@+id/desc_place_text_view"
+                    android:id="@+id/new_point_desc_place_text_view"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"

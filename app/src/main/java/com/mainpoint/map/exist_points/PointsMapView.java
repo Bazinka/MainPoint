@@ -1,7 +1,6 @@
-package com.mainpoint.points_map;
+package com.mainpoint.map.exist_points;
 
 import android.content.Context;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
@@ -9,7 +8,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
-import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,9 +21,8 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.mainpoint.BaseActivity;
 import com.mainpoint.R;
-import com.mainpoint.add_place.AddPointActivity;
+import com.mainpoint.map.MapEventListener;
 import com.mainpoint.models.Point;
 import com.mainpoint.utils.BitmapUtils;
 import com.mainpoint.utils.PermissionUtils;
@@ -35,7 +32,7 @@ import java.util.List;
 import java.util.Map;
 
 
-public class MapViewFragment extends Fragment implements OnMapReadyCallback, GoogleMap.OnMapClickListener,
+public class PointsMapView extends Fragment implements OnMapReadyCallback,
         GoogleMap.OnInfoWindowClickListener, GoogleMap.OnMarkerClickListener {
 
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
@@ -44,17 +41,16 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Goo
     private GoogleMap mMap;
 
     private Map<Marker, Point> markersToPointMap;
-    private Marker newPointMarker;
     private Marker prevSelectedMarker;
     private Point selectedPoint;
 
     private MapEventListener mapEventListener;
 
-    public MapViewFragment() {
+    public PointsMapView() {
     }
 
-    public static MapViewFragment newInstance() {
-        MapViewFragment fragment = new MapViewFragment();
+    public static PointsMapView newInstance() {
+        PointsMapView fragment = new PointsMapView();
         Bundle args = new Bundle();
         fragment.setArguments(args);
         return fragment;
@@ -68,7 +64,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Goo
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        ViewGroup mainView = (ViewGroup) inflater.inflate(R.layout.fragment_map, container, false);
+        ViewGroup mainView = (ViewGroup) inflater.inflate(R.layout.view_points_list_map, container, false);
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager()
                 .findFragmentById(R.id.map);
@@ -82,11 +78,10 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Goo
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
-        if (getParentFragment() instanceof PointsMapFragment) {
-            ((PointsMapFragment) getParentFragment()).loadPointsList();
+        if (getParentFragment() instanceof ExistingPointsMapFragment) {
+            ((ExistingPointsMapFragment) getParentFragment()).loadPointsList();
         }
 
-        mMap.setOnMapClickListener(this);
         mMap.setOnInfoWindowClickListener(this);
         mMap.setOnMarkerClickListener(this);
         enableMyLocation();
@@ -102,15 +97,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Goo
             mMap.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
                 @Override
                 public View getInfoWindow(Marker marker) {
-                    View layout;
-                    Point point = markersToPointMap.get(marker);
-                    if (point == null) {
-                        ContextThemeWrapper wrapper = new ContextThemeWrapper(getActivity(), R.style.TransparentBackground);
-                        LayoutInflater inflater = (LayoutInflater) wrapper.getSystemService(getActivity().LAYOUT_INFLATER_SERVICE);
-                        layout = inflater.inflate(R.layout.add_point_map_info_window, null);
-                    } else {
-                        layout = LayoutInflater.from(getActivity()).inflate(R.layout.transparency_map_info_window, null);
-                    }
+                    View layout = LayoutInflater.from(getActivity()).inflate(R.layout.transparency_map_info_window, null);
                     return layout;
                 }
 
@@ -154,12 +141,8 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Goo
             mPermissionDenied = false;
         }
         if (mMap != null) {
-            if (newPointMarker != null) {
-                newPointMarker.remove();
-                newPointMarker = null;
-            }
-            if (getParentFragment() instanceof PointsMapFragment) {
-                ((PointsMapFragment) getParentFragment()).loadPointsList();
+            if (getParentFragment() instanceof ExistingPointsMapFragment) {
+                ((ExistingPointsMapFragment) getParentFragment()).loadPointsList();
             }
         }
     }
@@ -167,25 +150,6 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Goo
     private void showMissingPermissionError() {
         PermissionUtils.PermissionDeniedDialog
                 .newInstance(true).show(getChildFragmentManager(), "dialog");
-    }
-
-    @Override
-    public void onMapClick(LatLng latLng) {
-        if (newPointMarker != null) {
-            newPointMarker.remove();
-        }
-
-        if (prevSelectedMarker != null) {
-            prevSelectedMarker.setIcon(BitmapDescriptorFactory.fromBitmap(BitmapUtils.getBitmapFromVectorDrawable(getContext(), R.drawable.ic_pin)));
-            prevSelectedMarker = null;
-        }
-        MarkerOptions markerOption = new MarkerOptions()
-                .position(latLng)
-                .title("Сохранить место?")
-                .icon(BitmapDescriptorFactory.fromBitmap(BitmapUtils.getBitmapFromVectorDrawable(getContext(), R.drawable.ic_selected_pin)));
-
-        newPointMarker = mMap.addMarker(markerOption);
-        newPointMarker.showInfoWindow();
     }
 
     public void showPointsToMap(List<Point> points) {
@@ -213,16 +177,11 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Goo
 
     @Override
     public void onInfoWindowClick(Marker marker) {
-        startAddPointActivity(marker);
     }
 
     @Override
     public boolean onMarkerClick(Marker clickedMarker) {
         if (markersToPointMap != null && markersToPointMap.get(clickedMarker) != null) {
-            if (newPointMarker != null) {
-                newPointMarker.remove();
-                newPointMarker = null;
-            }
             if (prevSelectedMarker != null) {
                 prevSelectedMarker.setIcon(BitmapDescriptorFactory.fromBitmap(BitmapUtils.getBitmapFromVectorDrawable(getContext(), R.drawable.ic_pin)));
             }
@@ -235,8 +194,6 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Goo
             if (mapEventListener != null) {
                 mapEventListener.onPointClick(point);
             }
-        } else {
-            startAddPointActivity(newPointMarker);
         }
         return false;
     }
@@ -252,15 +209,6 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Goo
                     onMarkerClick(entry.getKey());
                 }
             }
-        }
-    }
-
-    void startAddPointActivity(Marker marker) {
-        Intent intent = new Intent(getActivity(), AddPointActivity.class);
-        intent.putExtra(AddPointActivity.PLACE_LATITUDE_KEY, marker.getPosition().latitude);
-        intent.putExtra(AddPointActivity.PLACE_LONGITUDE_KEY, marker.getPosition().longitude);
-        if (getActivity() instanceof BaseActivity) {
-            ((BaseActivity) getActivity()).startActivityWithUpAnimation(intent);
         }
     }
 

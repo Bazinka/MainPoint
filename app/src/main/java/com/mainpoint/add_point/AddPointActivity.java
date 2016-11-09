@@ -1,4 +1,4 @@
-package com.mainpoint.add_place;
+package com.mainpoint.add_point;
 
 import android.os.Bundle;
 import android.widget.Button;
@@ -18,7 +18,7 @@ public class AddPointActivity extends BaseActivity implements AddPointView {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_add_place);
+        setContentView(R.layout.activity_save_new_point);
         setNavigationArrow();
 
         presenter = new AddPointPresenterImpl(this, this);
