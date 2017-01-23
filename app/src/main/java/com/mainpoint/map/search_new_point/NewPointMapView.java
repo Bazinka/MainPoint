@@ -9,7 +9,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
-import android.view.ContextThemeWrapper;
+import android.support.v7.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -95,7 +95,8 @@ public class NewPointMapView extends Fragment implements OnMapReadyCallback, Goo
         autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
             @Override
             public void onPlaceSelected(Place place) {
-                showNewPoint(place.getLatLng());
+                showNewPoint(new LatLng(52.36285886146438, 4.893647097051143));
+//                showNewPoint(new LatLng(place.getLatLng().latitude, place.getLatLng().longitude));
             }
 
             @Override
@@ -191,17 +192,23 @@ public class NewPointMapView extends Fragment implements OnMapReadyCallback, Goo
     }
 
     private void showNewPoint(LatLng latLng) {
-        if (newPointMarker != null) {
-            newPointMarker.remove();
+        if (mMap != null) {
+
+            mMap.clear();
+
+            if (newPointMarker != null) {
+                newPointMarker.remove();
+            }
+
+            MarkerOptions markerOption = new MarkerOptions()
+                    .position(new LatLng(52.36285886146438, 4.893647097051143))
+                    .title("Сохранить место?")
+                    .icon(BitmapDescriptorFactory.fromBitmap(BitmapUtils.getBitmapFromVectorDrawable(getContext(), R.drawable.ic_pin)));
+            newPointMarker = mMap.addMarker(markerOption);
+//            newPointMarker.showInfoWindow();
+            CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 15);
+            mMap.animateCamera(cameraUpdate);
         }
-
-        MarkerOptions markerOption = new MarkerOptions()
-                .position(latLng)
-                .title("Сохранить место?")
-                .icon(BitmapDescriptorFactory.fromBitmap(BitmapUtils.getBitmapFromVectorDrawable(getContext(), R.drawable.ic_selected_pin)));
-
-        newPointMarker = mMap.addMarker(markerOption);
-        newPointMarker.showInfoWindow();
     }
 
     @Override
