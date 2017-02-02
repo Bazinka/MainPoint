@@ -12,6 +12,7 @@ public class AddPointActivity extends BaseActivity implements AddPointView {
 
     public static final String PLACE_LATITUDE_KEY = "PLACE_LATITUDE_KEY";
     public static final String PLACE_LONGITUDE_KEY = "PLACE_LONGITUDE_KEY";
+    public static final String PLACE_NAME_KEY = "PLACE_NAME_KEY";
 
     AddPointPresenter presenter;
 
@@ -23,10 +24,10 @@ public class AddPointActivity extends BaseActivity implements AddPointView {
 
         presenter = new AddPointPresenterImpl(this, this);
 
-        String defaultDate = presenter.getDefaultName();
+        String defaultName = presenter.getDefaultName();
         EditText nameEditText = (EditText) findViewById(R.id.name_place_edit_view);
         if (nameEditText != null) {
-            nameEditText.setText(defaultDate);
+            nameEditText.setText(defaultName);
         }
 
         Button saveButton = (Button) findViewById(R.id.save_place_button);

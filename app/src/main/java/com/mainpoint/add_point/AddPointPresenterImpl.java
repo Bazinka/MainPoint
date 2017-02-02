@@ -1,6 +1,7 @@
 package com.mainpoint.add_point;
 
 import android.content.Context;
+import android.support.v7.app.AppCompatActivity;
 
 import com.mainpoint.R;
 import com.mainpoint.models.Point;
@@ -28,16 +29,24 @@ public class AddPointPresenterImpl implements AddPointPresenter {
     @Override
     public String getDefaultName() {
         LocalDateTime currentDate = new LocalDateTime();
-        return context.getString(R.string.default_place_name)
+        String defaultName = context.getString(R.string.default_place_name)
                 + " " + currentDate.dayOfWeek().getAsText(Locale.getDefault())
                 + ", " + currentDate.toString("dd.MM.yyyy HH:mm");
+        if (context instanceof AppCompatActivity) {
+            String name = ((AppCompatActivity) context).getIntent().getStringExtra(
+                    AddPointActivity.PLACE_NAME_KEY);
+            if (name != null) {
+                defaultName = name;
+            }
+        }
+        return defaultName;
     }
 
     @Override
     public void savePoint(String name, String comments, double latitude, double longitude) {
         Realm realm = Realm.getDefaultInstance();
 
-        if (realm != null && name != null && !name.isEmpty() && latitude > 0 && longitude > 0) {
+        if (realm != null && name != null && !name.isEmpty()) {
             boolean isSuccess = true;
             try {
                 realm.beginTransaction();

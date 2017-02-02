@@ -95,8 +95,8 @@ public class NewPointMapView extends Fragment implements OnMapReadyCallback, Goo
         autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
             @Override
             public void onPlaceSelected(Place place) {
-                showNewPoint(new LatLng(52.36285886146438, 4.893647097051143));
-//                showNewPoint(new LatLng(place.getLatLng().latitude, place.getLatLng().longitude));
+                showNewPoint(place.getLatLng());
+                startAddPointActivity(place.getLatLng().latitude, place.getLatLng().longitude, place.getName().toString());
             }
 
             @Override
@@ -201,11 +201,11 @@ public class NewPointMapView extends Fragment implements OnMapReadyCallback, Goo
             }
 
             MarkerOptions markerOption = new MarkerOptions()
-                    .position(new LatLng(52.36285886146438, 4.893647097051143))
+                    .position(latLng)
                     .title("Сохранить место?")
                     .icon(BitmapDescriptorFactory.fromBitmap(BitmapUtils.getBitmapFromVectorDrawable(getContext(), R.drawable.ic_pin)));
             newPointMarker = mMap.addMarker(markerOption);
-//            newPointMarker.showInfoWindow();
+            newPointMarker.showInfoWindow();
             CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 15);
             mMap.animateCamera(cameraUpdate);
         }
@@ -213,21 +213,33 @@ public class NewPointMapView extends Fragment implements OnMapReadyCallback, Goo
 
     @Override
     public void onInfoWindowClick(Marker marker) {
-        startAddPointActivity(marker);
+        startAddPointActivity(marker.getPosition().latitude, marker.getPosition().longitude);
     }
 
     @Override
     public boolean onMarkerClick(Marker clickedMarker) {
-        startAddPointActivity(newPointMarker);
+        startAddPointActivity(newPointMarker.getPosition().latitude, newPointMarker.getPosition().longitude);
         return false;
     }
 
-    void startAddPointActivity(Marker marker) {
+    void startAddPointActivity(double latitude, double longitude) {
         Intent intent = new Intent(getActivity(), AddPointActivity.class);
-        intent.putExtra(AddPointActivity.PLACE_LATITUDE_KEY, marker.getPosition().latitude);
-        intent.putExtra(AddPointActivity.PLACE_LONGITUDE_KEY, marker.getPosition().longitude);
+        intent.putExtra(AddPointActivity.PLACE_LATITUDE_KEY, latitude);
+        intent.putExtra(AddPointActivity.PLACE_LONGITUDE_KEY, longitude);
         if (getActivity() instanceof BaseActivity) {
             ((BaseActivity) getActivity()).startActivityWithUpAnimation(intent);
+            getActivity().finish();
+        }
+    }
+
+    void startAddPointActivity(double latitude, double longitude, String name) {
+        Intent intent = new Intent(getActivity(), AddPointActivity.class);
+        intent.putExtra(AddPointActivity.PLACE_LATITUDE_KEY, latitude);
+        intent.putExtra(AddPointActivity.PLACE_LONGITUDE_KEY, longitude);
+        intent.putExtra(AddPointActivity.PLACE_NAME_KEY, name);
+        if (getActivity() instanceof BaseActivity) {
+            ((BaseActivity) getActivity()).startActivityWithUpAnimation(intent);
+            getActivity().finish();
         }
     }
 
