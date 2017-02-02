@@ -40,6 +40,10 @@
         </activity>
         <activity android:name=".add_point.AddPointActivity" />
         <activity android:name=".map.search_new_point.SearchNewPointActivity"></activity>
+        <meta-data
+            android:name="io.fabric.ApiKey"
+            android:value="106104ec1cff9417dfad0a211e594bc4c3582d55" />
     </application>
 
+    <uses-permission android:name="android.permission.INTERNET" />
 </manifest>
