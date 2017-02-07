@@ -9,4 +9,5 @@
     <dimen name="text_margin">16dp</dimen>
     <dimen name="large_title_text_size">20sp</dimen>
     <dimen name="meduim_text_size">12sp</dimen>
+    <dimen name="logo_text_size_large">30sp</dimen>
 </resources>

@@ -28,4 +28,20 @@
         <item name="android:windowIsFloating">true</item> <!-- окно в любой части экрана -->
         <item name="android:backgroundDimEnabled">false</item> <!-- отключаем затемнение -->
     </style>
+
+    <style name="FirebaseUI" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="colorButtonNormal">@color/colorAccent</item>
+        <item name="colorControlNormal">@color/colorAccent</item>
+        <item name="colorControlActivated">@color/colorAccent</item>
+        <item name="colorControlHighlight">@color/colorAccent</item>
+        <item name="android:textColor">@color/authui_inputTextColorDark</item>
+        <item name="android:textColorPrimary">@color/authui_inputTextColor</item>
+        <item name="android:buttonStyle">@style/FirebaseUI.Button</item>
+        <item name="android:editTextStyle">@style/FirebaseUI.EditText</item>
+    </style>
 </resources>

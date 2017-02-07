@@ -20,5 +20,11 @@
     <string name="points_on_map_title">Points on the map</string>
     <string name="list_points_title">List of points</string>
     <string name="search_new_place_title">Search new place</string>
+    <string name="unknown_response">Unexpected onActivityResult response code</string>
+    <string name="sign_in_cancelled">Sign in cancelled</string>
+    <string name="no_internet_connection">No internet connection</string>
+    <string name="unknown_error">An unknown error occurred</string>
+    <string name="unknown_sign_in_response">Unknown response from AuthUI sign-in</string>
+    <string name="login">Login</string>
 
 </resources>

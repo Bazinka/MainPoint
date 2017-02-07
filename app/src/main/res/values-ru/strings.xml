@@ -21,5 +21,11 @@
     <string name="points_on_map_title">Карта</string>
     <string name="list_points_title">Список точек</string>
     <string name="search_new_place_title">Поиск нового места</string>
+    <string name="unknown_response">Неизвестная ошибка запроса авторизации</string>
+    <string name="sign_in_cancelled">Авторизация отменена</string>
+    <string name="no_internet_connection">Проблема с интернет-соединением</string>
+    <string name="unknown_error">Неизвестная ошибка</string>
+    <string name="unknown_sign_in_response">Неизвестная ошибка при авторизации</string>
+    <string name="login">Войти</string>
 
 </resources>
