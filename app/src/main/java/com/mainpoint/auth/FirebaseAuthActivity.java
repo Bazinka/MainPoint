@@ -3,22 +3,22 @@ package com.mainpoint.auth;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
-import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-import android.widget.Button;
 
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.ErrorCodes;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.ResultCodes;
 import com.google.android.gms.common.Scopes;
+import com.google.firebase.auth.FirebaseAuth;
+import com.mainpoint.BaseActivity;
 import com.mainpoint.MainActivity;
 import com.mainpoint.R;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class FirebaseAuthActivity extends AppCompatActivity {
+public class FirebaseAuthActivity extends BaseActivity {
 
 
     private static final String GOOGLE_TOS_URL = "https://www.google.com/policies/terms/";
@@ -32,19 +32,21 @@ public class FirebaseAuthActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_firebase_auth);
         mRootView = findViewById(R.id.firebase_auth_root);
-
-        Button loginButton = (Button) findViewById(R.id.auth_login_button);
-        loginButton.setOnClickListener((v) -> {
-            startActivityForResult(
+        FirebaseAuth auth = FirebaseAuth.getInstance();
+        if (auth.getCurrentUser() != null) {
+            startActivityWithLeftAnimation(createIntentToMainActivity(null));
+            finish();
+        } else {
+            startActivityForResultWithLeftAnimation(
                     AuthUI.getInstance().createSignInIntentBuilder()
-                            .setTheme(com.firebase.ui.auth.R.style.FirebaseUI)
+                            .setTheme(R.style.FirebaseUI)
                             .setLogo(R.drawable.logo)
                             .setProviders(getSelectedProviders())
                             .setTosUrl(getSelectedTosUrl())
                             .setIsSmartLockEnabled(false)
                             .build(),
                     RC_SIGN_IN);
-        });
+        }
     }
 
     private String getSelectedTosUrl() {
@@ -114,9 +116,7 @@ public class FirebaseAuthActivity extends AppCompatActivity {
 
         // Successfully signed in
         if (resultCode == ResultCodes.OK) {
-            Intent in = IdpResponse.getIntent(response);
-            in.setClass(this, MainActivity.class);
-            startActivity(in);
+            startActivityWithLeftAnimation(createIntentToMainActivity(response));
             finish();
             return;
         } else {
@@ -139,5 +139,11 @@ public class FirebaseAuthActivity extends AppCompatActivity {
         }
 
         showSnackbar(R.string.unknown_sign_in_response);
+    }
+
+    public Intent createIntentToMainActivity(IdpResponse idpResponse) {
+        Intent in = IdpResponse.getIntent(idpResponse);
+        in.setClass(this, MainActivity.class);
+        return in;
     }
 }

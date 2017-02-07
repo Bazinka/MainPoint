@@ -23,19 +23,4 @@
         android:layout_centerHorizontal="true"
         android:paddingBottom="10dp"
         android:src="@drawable/logo" />
-
-    <Button
-        android:id="@+id/auth_login_button"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignEnd="@id/auth_logo_imageView"
-        android:layout_alignLeft="@id/auth_logo_imageView"
-        android:layout_alignRight="@id/auth_logo_imageView"
-        android:layout_alignStart="@id/auth_logo_imageView"
-        android:layout_below="@id/logo_textView"
-        android:background="@color/colorAccent"
-        android:paddingTop="10dp"
-        android:text="@string/login"
-        android:textColor="@color/white"
-        android:textSize="@dimen/logo_text_size_large" />
 </RelativeLayout>
