@@ -66,6 +66,7 @@ dependencies {
         transitive = true;
     }
     compile project(path: ':auth')
+    compile 'com.squareup.picasso:picasso:2.5.2'
 }
 
 apply plugin: 'com.google.gms.google-services'

@@ -27,5 +27,8 @@
     <string name="unknown_error">Неизвестная ошибка</string>
     <string name="unknown_sign_in_response">Неизвестная ошибка при авторизации</string>
     <string name="login">Войти</string>
+    <string name="sign_out_failed">Ошибка выхода</string>
+    <string name="sign_out">Выйти</string>
+    <string name="general_settings">Общие</string>
 
 </resources>
