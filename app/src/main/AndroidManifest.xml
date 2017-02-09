@@ -38,6 +38,7 @@
 
         <meta-data
             android:name="io.fabric.ApiKey"
+
             android:value="106104ec1cff9417dfad0a211e594bc4c3582d55" />
 
         <activity
@@ -48,8 +49,12 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity><!-- ATTENTION: This was auto-generated to add Google Play services to your project for
-     App Indexing.  See https://g.co/AppIndexing/AndroidStudio for more information. -->
+        </activity>
+        <activity
+            android:name="com.mainpoint.auth.AuthMethodPickerActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+
+
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />

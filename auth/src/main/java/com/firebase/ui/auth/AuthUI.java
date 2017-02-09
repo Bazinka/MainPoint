@@ -15,7 +15,6 @@
 package com.firebase.ui.auth;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.DrawableRes;
@@ -27,7 +26,6 @@ import android.support.annotation.VisibleForTesting;
 import com.facebook.FacebookSdk;
 import com.facebook.login.LoginManager;
 import com.firebase.ui.auth.ui.FlowParameters;
-import com.firebase.ui.auth.ui.idp.AuthMethodPickerActivity;
 import com.firebase.ui.auth.util.CredentialsApiHelper;
 import com.firebase.ui.auth.util.GoogleApiClientTaskHelper;
 import com.firebase.ui.auth.util.Preconditions;
@@ -77,14 +75,14 @@ import java.util.Set;
  * implemented by this library:
  * <p>
  * <ul>
- *     <li>The set of authentication methods desired can be specified.</li>
- *     <li>The terms of service URL for your app can be specified, which is included as a link
- *         in the small-print of the account creation step for new users. If no terms of service
- *         URL is provided, the associated small-print is omitted.
- *     </li>
- *     <li>A custom theme can specified for the flow, which is applied to all the activities in
- *         the flow for consistent customization of colors and typography.
- *     </li>
+ * <li>The set of authentication methods desired can be specified.</li>
+ * <li>The terms of service URL for your app can be specified, which is included as a link
+ * in the small-print of the account creation step for new users. If no terms of service
+ * URL is provided, the associated small-print is omitted.
+ * </li>
+ * <li>A custom theme can specified for the flow, which is applied to all the activities in
+ * the flow for consistent customization of colors and typography.
+ * </li>
  * </ul>
  * <p>
  * <p>
@@ -168,17 +166,17 @@ import java.util.Set;
  * With the integrations provided by AuthUI, signing out a user is a multi-stage process:
  * <p>
  * <ol>
- *     <li>The user must be signed out of the {@link FirebaseAuth} instance.</li>
- *     <li>Smart Lock for Passwords must be instructed to disable automatic sign-in, in
- *         order to prevent an automatic sign-in loop that prevents the user from switching
- *         accounts.
- *     </li>
- *     <li>If the current user signed in using either Google or Facebook, the user must also be
- *         signed out using the associated API for that authentication method. This typically
- *         ensures that the user will not be automatically signed-in using the current account
- *         when using that authentication method again from the authentication method picker, which
- *         would also prevent the user from switching between accounts on the same provider.
- *     </li>
+ * <li>The user must be signed out of the {@link FirebaseAuth} instance.</li>
+ * <li>Smart Lock for Passwords must be instructed to disable automatic sign-in, in
+ * order to prevent an automatic sign-in loop that prevents the user from switching
+ * accounts.
+ * </li>
+ * <li>If the current user signed in using either Google or Facebook, the user must also be
+ * signed out using the associated API for that authentication method. This typically
+ * ensures that the user will not be automatically signed-in using the current account
+ * when using that authentication method again from the authentication method picker, which
+ * would also prevent the user from switching between accounts on the same provider.
+ * </li>
  * </ol>
  * <p>
  * In order to make this process easier, AuthUI provides a simple
@@ -251,7 +249,7 @@ public class AuthUI {
 
     /**
      * Default value for logo resource, omits the logo from the
-     * {@link AuthMethodPickerActivity}
+     * AuthMethodPickerActivity
      */
     public static final int NO_LOGO = -1;
 
@@ -536,7 +534,7 @@ public class AuthUI {
         }
 
         /**
-         * Specifies the logo to use for the {@link AuthMethodPickerActivity}. If no logo
+         * Specifies the logo to use for the  AuthMethodPickerActivity. If no logo
          * is specified, none will be used.
          */
         public SignInIntentBuilder setLogo(@DrawableRes int logo) {
@@ -569,8 +567,8 @@ public class AuthUI {
             for (IdpConfig idpConfig : idpConfigs) {
                 if (configuredProviders.contains(idpConfig.getProviderId())) {
                     throw new IllegalArgumentException("Each provider can only be set once. "
-                                                               + idpConfig.getProviderId()
-                                                               + " was set twice.");
+                            + idpConfig.getProviderId()
+                            + " was set twice.");
                 }
                 configuredProviders.add(idpConfig.getProviderId());
                 mProviders.add(idpConfig);
@@ -621,18 +619,14 @@ public class AuthUI {
             return false;
         }
 
-        public Intent build() {
-            return KickoffActivity.createIntent(mApp.getApplicationContext(), getFlowParams());
-        }
-
         @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
         public FlowParameters getFlowParams() {
             return new FlowParameters(mApp.getName(),
-                                      new ArrayList<>(mProviders),
-                                      mTheme,
-                                      mLogo,
-                                      mTosUrl,
-                                      mIsSmartLockEnabled);
+                    new ArrayList<>(mProviders),
+                    mTheme,
+                    mLogo,
+                    mTosUrl,
+                    mIsSmartLockEnabled);
         }
     }
 }

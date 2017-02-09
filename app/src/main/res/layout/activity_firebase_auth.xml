@@ -3,7 +3,8 @@
     android:id="@+id/firebase_auth_root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorPrimary">
+    android:background="@color/colorPrimary"
+    android:fitsSystemWindows="true">
 
     <TextView
         android:id="@+id/logo_textView"

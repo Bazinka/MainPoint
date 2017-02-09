@@ -21,12 +21,6 @@
             android:value="@string/facebook_application_id"/>
 
         <activity
-            android:name=".KickoffActivity"
-            android:exported="false"
-            android:label=""
-            android:theme="@style/FirebaseUI.Transparent"/>
-
-        <activity
             android:name=".ui.email.RecoverPasswordActivity"
             android:label="@string/title_recover_password_activity"
             android:exported="false"/>
@@ -44,11 +38,6 @@
         <activity
             android:name=".ui.accountlink.WelcomeBackPasswordPrompt"
             android:label="@string/title_welcome_back_password_prompt"
-            android:exported="false"/>
-
-        <activity
-            android:name=".ui.idp.AuthMethodPickerActivity"
-            android:label="@string/default_toolbar_title"
             android:exported="false"/>
 
         <activity

@@ -37,14 +37,15 @@ public class FirebaseAuthActivity extends BaseActivity {
             startActivityWithLeftAnimation(createIntentToMainActivity(null));
             finish();
         } else {
-            startActivityForResultWithLeftAnimation(
-                    AuthUI.getInstance().createSignInIntentBuilder()
-                            .setTheme(R.style.FirebaseUI)
-                            .setLogo(R.drawable.logo)
-                            .setProviders(getSelectedProviders())
-                            .setTosUrl(getSelectedTosUrl())
-                            .setIsSmartLockEnabled(false)
-                            .build(),
+            startActivityForResult(
+                    AuthMethodPickerActivity.createIntent(
+                            this,
+                            AuthUI.getInstance().createSignInIntentBuilder()
+                                    .setTheme(R.style.FirebaseUI)
+                                    .setLogo(R.drawable.logo)
+                                    .setProviders(getSelectedProviders())
+                                    .setTosUrl(getSelectedTosUrl())
+                                    .setIsSmartLockEnabled(false).getFlowParams()),
                     RC_SIGN_IN);
         }
     }
