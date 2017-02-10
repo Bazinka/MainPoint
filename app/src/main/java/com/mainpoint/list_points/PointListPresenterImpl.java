@@ -28,14 +28,4 @@ public class PointListPresenterImpl implements PointListPresenter {
     @Override
     public void onDestroy() {
     }
-
-    @Override
-    public void getPoints() {
-        List<Point> points;
-
-            points = new ArrayList<>();
-        if (mainView != null) {
-            mainView.setListPoints(points);
-        }
-    }
 }

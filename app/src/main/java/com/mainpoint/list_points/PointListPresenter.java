@@ -9,8 +9,4 @@ public interface PointListPresenter {
     public void onCreate();
 
     public void onDestroy();
-
-//    List<Point>getPoints();
-
-    void getPoints();
 }

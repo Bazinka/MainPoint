@@ -18,6 +18,7 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.mainpoint.R;
 import com.mainpoint.models.Point;
+import com.mainpoint.utils.DatabaseConstants;
 
 import org.joda.time.LocalDateTime;
 
@@ -44,7 +45,7 @@ public class AddPointPresenterImpl implements AddPointPresenter {
         this.context = contex;
         this.mainView = mainView;
         mRef = FirebaseDatabase.getInstance().getReference();
-        mNewPointRef = mRef.child("new_point");
+        mNewPointRef = mRef.child(DatabaseConstants.DATABASE_POINT_TABLE);
         photoListPreferences = new ArrayList<>();
     }
 

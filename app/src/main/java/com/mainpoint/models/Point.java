@@ -25,14 +25,18 @@ public class Point implements Serializable {
 
     private List<String> photoList;
 
+    public Point() {
+        jodaDateCreated = LocalDateTime.now();
+        dateCreatedMillisek = jodaDateCreated.getMillisOfSecond();
+    }
+
     public Point(String id, String name, String comments, double latityde, double longitude) {
+        super();
         this.id = id;
         this.name = name;
         this.comments = comments;
         this.latityde = latityde;
         this.longitude = longitude;
-        jodaDateCreated = LocalDateTime.now();
-        dateCreatedMillisek = jodaDateCreated.getMillisOfSecond();
     }
 
     @NonNull

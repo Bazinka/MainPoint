@@ -9,16 +9,25 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.mainpoint.R;
 import com.mainpoint.models.Point;
-
-import java.util.List;
+import com.mainpoint.utils.DatabaseConstants;
 
 public class PointListFragment extends Fragment implements PointListView {
 
     private PointListPresenter presenter;
-    private PointListRecyclerViewAdapter adapter;
+
     private OnPointsListClickListener listener;
+
+    private DatabaseReference pointListRef;
+
+    private RecyclerView pointListRecyclerView;
+    private LinearLayoutManager manager;
+    private PointListRecyclerViewAdapter adapter;
+    private View emptyListView;
 
     public PointListFragment() {
     }
@@ -51,36 +60,54 @@ public class PointListFragment extends Fragment implements PointListView {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_point_list, container, false);
 
+        emptyListView = view.findViewById(R.id.emptyTextView);
+
         Context context = view.getContext();
-        RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.points_list_recyclerview);
-        recyclerView.setLayoutManager(new LinearLayoutManager(context));
+        pointListRecyclerView = (RecyclerView) view.findViewById(R.id.points_list_recyclerview);
+        pointListRecyclerView.setHasFixedSize(false);
 
-        adapter = new PointListRecyclerViewAdapter();
-        if (listener != null) {
-            adapter.setClickListener(listener);
-        }
-        recyclerView.setAdapter(adapter);
+        manager = new LinearLayoutManager(context);
+        pointListRecyclerView.setLayoutManager(manager);
 
-        if (presenter != null) {
-            presenter.getPoints();
-        }
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
+        pointListRef = ref.child(DatabaseConstants.DATABASE_POINT_TABLE);
+
+        attachRecyclerViewAdapter();
         return view;
     }
 
-    @Override
-    public void setListPoints(List<Point> pointsList) {
-        if (adapter != null) {
-            adapter.updatePointsList(pointsList);
-        }
+    private void attachRecyclerViewAdapter() {
+        Query lastFifty = pointListRef.limitToLast(50);
+
+        adapter = new PointListRecyclerViewAdapter(lastFifty, new PointListRecyclerViewAdapter.OnPointsListEventListener() {
+            @Override
+            public void onItemClick(Point item) {
+                if (listener != null) {
+                    listener.onClick(item);
+                }
+            }
+
+            @Override
+            public void onDataChanged() {
+                emptyListView.setVisibility(adapter.getItemCount() == 0 ? View.VISIBLE : View.INVISIBLE);
+            }
+        });
+
+        // Scroll to bottom on new messages
+//        adapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
+//            @Override
+//            public void onItemRangeInserted(int positionStart, int itemCount) {
+//                manager.smoothScrollToPosition(pointListRecyclerView, null, adapter.getItemCount());
+//            }
+//        });
+
+        pointListRecyclerView.setAdapter(adapter);
     }
+
 
     public void setOnPointClickListener(OnPointsListClickListener _listener) {
         listener = _listener;
-        if (adapter != null) {
-            adapter.setClickListener(_listener);
-        }
     }
-
 
     public interface OnPointsListClickListener {
         void onClick(Point item);
