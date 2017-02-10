@@ -77,19 +77,32 @@ public class AddPointPresenterImpl implements AddPointPresenter {
             Point point = new Point(id, name, comments, latitude, longitude);
             List<String> photoUrlsList = new ArrayList<>();
             for (StorageReference pref : photoListPreferences) {
-                photoUrlsList.add(pref.getPath());
-            }
-            point.setPhotoList(photoUrlsList);
-            mNewPointRef.push().setValue(point, new DatabaseReference.CompletionListener() {
-                @Override
-                public void onComplete(DatabaseError databaseError, DatabaseReference reference) {
-                    if (databaseError != null) {
-                        Log.e("AddPointPresenterImpl", "Failed to write message", databaseError.toException());
-                    } else {
-                        mainView.setSuccessSavePoint();
+                pref.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                    @Override
+                    public void onSuccess(Uri uri) {
+                        photoUrlsList.add(uri.toString());
+                        if (photoUrlsList.size() == photoListPreferences.size()) {
+                            point.setPhotoList(photoUrlsList);
+                            mNewPointRef.push().setValue(point, new DatabaseReference.CompletionListener() {
+                                @Override
+                                public void onComplete(DatabaseError databaseError, DatabaseReference reference) {
+                                    if (databaseError != null) {
+                                        Log.e("AddPointPresenterImpl", "Failed to write message", databaseError.toException());
+                                    } else {
+                                        mainView.setSuccessSavePoint();
+                                    }
+                                }
+                            });
+                        }
                     }
-                }
-            });
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception exception) {
+                        Toast.makeText(context, R.string.save_point_error, Toast.LENGTH_LONG).show();
+                    }
+                });
+
+            }
         }
     }
 

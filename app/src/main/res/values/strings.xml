@@ -33,5 +33,6 @@
     <string name="add_point_add_photo_button">+ Добавить фото</string>
     <string name="rational_image_perm">This sample will read an image from local storage to upload to Firebase Storage.</string>
     <string name="points_dont_exist">Нет точек</string>
+    <string name="save_point_error">Saving error. Try to save this point again.</string>
 
 </resources>

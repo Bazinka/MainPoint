@@ -5,6 +5,8 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -93,6 +95,13 @@ public class ExistingPointsMapFragment extends Fragment implements ExistingPoint
                 Log.i("BottomSheetCallback", "slideOffset: " + slideOffset);
             }
         });
+        RecyclerView photosRecyclerView = (RecyclerView) bottomSheet.findViewById(R.id.photos_recycler_view);
+        photosRecyclerView.setHasFixedSize(true);
+
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
+        layoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
+        photosRecyclerView.setLayoutManager(layoutManager);
+
         PointsMapView pointsMapView = (PointsMapView) getChildFragmentManager()
                 .findFragmentById(R.id.points_map_view);
         if (pointsMapView != null) {
@@ -133,6 +142,15 @@ public class ExistingPointsMapFragment extends Fragment implements ExistingPoint
 
             TextView descTextView = (TextView) bottomSheet.findViewById(R.id.desc_place_text_view);
             descTextView.setText(point.getComments());
+
+            RecyclerView photosRecyclerView = (RecyclerView) bottomSheet.findViewById(R.id.photos_recycler_view);
+            if (point.getPhotoList() != null && point.getPhotoList().size() > 0) {
+                photosRecyclerView.setVisibility(View.VISIBLE);
+                PhotoListRecyclerAdapter adapter = new PhotoListRecyclerAdapter(getActivity(), point.getPhotoList());
+                photosRecyclerView.setAdapter(adapter);
+            } else {
+                photosRecyclerView.setVisibility(View.GONE);
+            }
 
             selectedPoint = null;
         }
