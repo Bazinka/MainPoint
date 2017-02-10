@@ -45,7 +45,7 @@ public class AddPointActivity extends BaseActivity implements AddPointView {
         setContentView(R.layout.activity_save_new_point);
         setNavigationArrow();
 
-        progressView = (ProgressBar) findViewById(R.id.add_piont_progress);
+        progressView = (ProgressBar) findViewById(R.id.add_point_progress);
         presenter = new AddPointPresenterImpl(this, this);
 
         String defaultName = presenter.getDefaultName();
@@ -162,4 +162,11 @@ public class AddPointActivity extends BaseActivity implements AddPointView {
         }
     }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        if (presenter != null) {
+            presenter.removePhotos();
+        }
+    }
 }

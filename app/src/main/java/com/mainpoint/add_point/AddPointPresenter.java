@@ -13,4 +13,6 @@ public interface AddPointPresenter {
     void savePoint(String name, String comments, double latitude, double longitude);
 
     void uploadPhoto(Uri uri);
+
+    void removePhotos();
 }

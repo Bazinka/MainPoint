@@ -129,4 +129,12 @@ public class AddPointPresenterImpl implements AddPointPresenter {
                 });
     }
 
+    @Override
+    public void removePhotos() {
+        for (StorageReference pref : photoListPreferences) {
+            pref.delete();
+        }
+
+    }
+
 }
