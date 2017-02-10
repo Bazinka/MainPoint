@@ -5,6 +5,7 @@ import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.View;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
@@ -95,7 +96,9 @@ public class AddPointPresenterImpl implements AddPointPresenter {
     @Override
     public void uploadPhoto(Uri uri) {
         Toast.makeText(context, "Uploading...", Toast.LENGTH_SHORT).show();
-
+        if (mainView != null) {
+            mainView.setProgressBarVisability(View.VISIBLE);
+        }
         // Upload to Firebase Storage
         String uuid = UUID.randomUUID().toString();
         StorageReference imageRef = FirebaseStorage.getInstance().getReference(uuid);
@@ -116,6 +119,9 @@ public class AddPointPresenterImpl implements AddPointPresenter {
                 .addOnFailureListener(mainView.getActivity(), new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
+                        if (mainView != null) {
+                            mainView.setProgressBarVisability(View.GONE);
+                        }
                         Log.w("AddPoint", "uploadPhoto:onError", e);
                         Toast.makeText(context, "Upload failed",
                                 Toast.LENGTH_SHORT).show();

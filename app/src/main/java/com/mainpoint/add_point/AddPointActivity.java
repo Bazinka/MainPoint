@@ -8,10 +8,12 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v4.content.ContextCompat;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
@@ -32,7 +34,9 @@ public class AddPointActivity extends BaseActivity implements AddPointView {
     public static final String PLACE_LONGITUDE_KEY = "PLACE_LONGITUDE_KEY";
     public static final String PLACE_NAME_KEY = "PLACE_NAME_KEY";
 
-    AddPointPresenter presenter;
+    private AddPointPresenter presenter;
+
+    private ProgressBar progressView;
 
 
     @Override
@@ -41,6 +45,7 @@ public class AddPointActivity extends BaseActivity implements AddPointView {
         setContentView(R.layout.activity_save_new_point);
         setNavigationArrow();
 
+        progressView = (ProgressBar) findViewById(R.id.add_piont_progress);
         presenter = new AddPointPresenterImpl(this, this);
 
         String defaultName = presenter.getDefaultName();
@@ -131,7 +136,10 @@ public class AddPointActivity extends BaseActivity implements AddPointView {
 
     @Override
     public void setSuccessAddPhoto(List<StorageReference> listImageRef) {
+        setProgressBarVisability(View.GONE);
+        findViewById(R.id.save_point_photo_title).setVisibility(View.VISIBLE);
         LinearLayout ll = (LinearLayout) findViewById(R.id.save_point_photo_layout);
+        ll.setVisibility(View.VISIBLE);
         ll.removeAllViews();
         for (StorageReference pref : listImageRef) {
             ImageView ii = new ImageView(this);
@@ -145,6 +153,13 @@ public class AddPointActivity extends BaseActivity implements AddPointView {
             ll.addView(ii);
         }
         ll.invalidate();
+    }
+
+    @Override
+    public void setProgressBarVisability(int visability) {
+        if (progressView != null) {
+            progressView.setVisibility(visability);
+        }
     }
 
 }

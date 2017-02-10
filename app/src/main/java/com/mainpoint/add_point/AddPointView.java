@@ -19,4 +19,6 @@ public interface AddPointView {
     Activity getActivity();
 
     void setSuccessAddPhoto(List<StorageReference> listImageRef);
+
+    void setProgressBarVisability(int visability);
 }
