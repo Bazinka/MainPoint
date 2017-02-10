@@ -1,16 +1,30 @@
 package com.mainpoint.add_point;
 
 import android.content.Context;
+import android.net.Uri;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
+import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 import com.mainpoint.R;
 import com.mainpoint.models.Point;
 
 import org.joda.time.LocalDateTime;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
-
-import io.realm.Realm;
+import java.util.UUID;
 
 /**
  * Created by DariaEfimova on 19.10.16.
@@ -21,9 +35,17 @@ public class AddPointPresenterImpl implements AddPointPresenter {
     private AddPointView mainView;
     private Context context;
 
+    private DatabaseReference mRef;
+    private DatabaseReference mNewPointRef;
+
+    private List<StorageReference> photoListPreferences;
+
     public AddPointPresenterImpl(Context contex, AddPointView mainView) {
         this.context = contex;
         this.mainView = mainView;
+        mRef = FirebaseDatabase.getInstance().getReference();
+        mNewPointRef = mRef.child("new_point");
+        photoListPreferences = new ArrayList<>();
     }
 
     @Override
@@ -44,35 +66,60 @@ public class AddPointPresenterImpl implements AddPointPresenter {
 
     @Override
     public void savePoint(String name, String comments, double latitude, double longitude) {
-        Realm realm = Realm.getDefaultInstance();
-
-        if (realm != null && name != null && !name.isEmpty()) {
-            boolean isSuccess = true;
-            try {
-                realm.beginTransaction();
-                // increatement index
-                long nextID = 1;
-                if (realm.where(Point.class).max("id") != null) {
-                    nextID = realm.where(Point.class).max("id").longValue() + 1L;
-                }
-                Point point = realm.createObject(Point.class, nextID);
-                point.setName(name);
-                point.setLatityde(latitude);
-                point.setLongitude(longitude);
-                point.setComments(comments);
-                realm.commitTransaction();
-            } catch (Exception e) {
-                isSuccess = false;
-                if (mainView != null) {
-                    mainView.setErrorSavePoint("Something went wrong");
-                }
-            } finally {
-                realm.close();
+        if (mNewPointRef != null
+                && FirebaseAuth.getInstance() != null
+                && FirebaseAuth.getInstance().getCurrentUser() != null
+                && name != null
+                && !name.isEmpty()) {
+            String id = FirebaseAuth.getInstance().getCurrentUser().getUid();
+            Point point = new Point(id, name, comments, latitude, longitude);
+            List<String> photoUrlsList = new ArrayList<>();
+            for (StorageReference pref : photoListPreferences) {
+                photoUrlsList.add(pref.getPath());
             }
-
-            if (isSuccess && mainView != null) {
-                mainView.setSuccessSavePoint();
-            }
+            point.setPhotoList(photoUrlsList);
+            mNewPointRef.push().setValue(point, new DatabaseReference.CompletionListener() {
+                @Override
+                public void onComplete(DatabaseError databaseError, DatabaseReference reference) {
+                    if (databaseError != null) {
+                        Log.e("AddPointPresenterImpl", "Failed to write message", databaseError.toException());
+                    } else {
+                        mainView.setSuccessSavePoint();
+                    }
+                }
+            });
         }
     }
+
+    @Override
+    public void uploadPhoto(Uri uri) {
+        Toast.makeText(context, "Uploading...", Toast.LENGTH_SHORT).show();
+
+        // Upload to Firebase Storage
+        String uuid = UUID.randomUUID().toString();
+        StorageReference imageRef = FirebaseStorage.getInstance().getReference(uuid);
+        imageRef.putFile(uri)
+                .addOnSuccessListener(mainView.getActivity(), new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                        Log.d("AddPoint", "uploadPhoto:onSuccess:" +
+                                taskSnapshot.getMetadata().getReference().getPath());
+                        Toast.makeText(context, "Image uploaded",
+                                Toast.LENGTH_SHORT).show();
+                        photoListPreferences.add(imageRef);
+                        if (mainView != null) {
+                            mainView.setSuccessAddPhoto(photoListPreferences);
+                        }
+                    }
+                })
+                .addOnFailureListener(mainView.getActivity(), new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.w("AddPoint", "uploadPhoto:onError", e);
+                        Toast.makeText(context, "Upload failed",
+                                Toast.LENGTH_SHORT).show();
+                    }
+                });
+    }
+
 }

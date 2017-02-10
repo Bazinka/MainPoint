@@ -14,7 +14,6 @@ repositories {
     maven { url 'https://maven.fabric.io/public' }
 }
 
-apply plugin: 'realm-android'
 apply plugin: 'me.tatarka.retrolambda'
 
 android {
@@ -57,6 +56,12 @@ dependencies {
     compile 'com.bettervectordrawable:lib:0.8'
     compile 'com.android.support:recyclerview-v7:23.4.0'
     compile 'com.google.firebase:firebase-auth:10.0.1'
+    compile 'com.google.firebase:firebase-core:10.0.1'
+    compile 'com.google.firebase:firebase-database:10.0.1'
+
+    compile 'com.google.firebase:firebase-storage:9.2.1'
+    compile 'com.github.bumptech.glide:glide:3.7.0'
+
     testCompile 'junit:junit:4.12'
     retrolambdaConfig 'net.orfjackal.retrolambda:retrolambda:2.0.5'
     compile('com.crashlytics.sdk.android:crashlytics:2.6.6@aar') {

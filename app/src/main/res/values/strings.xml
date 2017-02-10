@@ -29,5 +29,8 @@
     <string name="sign_out_failed">Sign out failed</string>
     <string name="sign_out">Sign out</string>
     <string name="general_settings">Общие</string>
+    <string name="add_point_photo_title">Фотографии</string>
+    <string name="add_point_add_photo_button">+ Добавить фото</string>
+    <string name="rational_image_perm">This sample will read an image from local storage to upload to Firebase Storage.</string>
 
 </resources>

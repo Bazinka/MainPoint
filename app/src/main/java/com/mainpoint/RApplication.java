@@ -3,14 +3,14 @@ package com.mainpoint;
 import android.app.Application;
 
 import com.bettervectordrawable.VectorDrawableCompat;
-
 import com.crashlytics.android.Crashlytics;
 import com.twitter.sdk.android.Twitter;
 import com.twitter.sdk.android.core.TwitterAuthConfig;
-import io.fabric.sdk.android.Fabric;
+
 import net.danlew.android.joda.JodaTimeAndroid;
 
-import io.realm.Realm;
+import io.fabric.sdk.android.Fabric;
+
 
 /**
  * Created by DariaEfimova on 17.10.16.
@@ -28,7 +28,6 @@ public class RApplication extends Application {
         super.onCreate();
         TwitterAuthConfig authConfig = new TwitterAuthConfig(TWITTER_KEY, TWITTER_SECRET);
         Fabric.with(this, new Crashlytics(), new Twitter(authConfig));
-        Realm.init(this);
         JodaTimeAndroid.init(this);
         findAllVectorResourceIdsSlow();
     }
