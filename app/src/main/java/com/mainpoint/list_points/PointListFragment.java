@@ -9,20 +9,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
 import com.mainpoint.R;
 import com.mainpoint.models.Point;
-import com.mainpoint.utils.DatabaseConstants;
 
 public class PointListFragment extends Fragment implements PointListView {
 
     private PointListPresenter presenter;
 
     private OnPointsListClickListener listener;
-
-    private DatabaseReference pointListRef;
 
     private RecyclerView pointListRecyclerView;
     private LinearLayoutManager manager;
@@ -69,29 +63,26 @@ public class PointListFragment extends Fragment implements PointListView {
         manager = new LinearLayoutManager(context);
         pointListRecyclerView.setLayoutManager(manager);
 
-        DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
-        pointListRef = ref.child(DatabaseConstants.DATABASE_POINT_TABLE);
-
         attachRecyclerViewAdapter();
         return view;
     }
 
     private void attachRecyclerViewAdapter() {
-        Query lastFifty = pointListRef.limitToLast(50);
 
-        adapter = new PointListRecyclerViewAdapter(lastFifty, new PointListRecyclerViewAdapter.OnPointsListEventListener() {
-            @Override
-            public void onItemClick(Point item) {
-                if (listener != null) {
-                    listener.onClick(item);
-                }
-            }
+        adapter = new PointListRecyclerViewAdapter(presenter != null ? presenter.getItems() : null,
+                new PointListRecyclerViewAdapter.OnPointsListEventListener() {
+                    @Override
+                    public void onItemClick(Point item) {
+                        if (listener != null) {
+                            listener.onClick(item);
+                        }
+                    }
 
-            @Override
-            public void onDataChanged() {
-                emptyListView.setVisibility(adapter.getItemCount() == 0 ? View.VISIBLE : View.INVISIBLE);
-            }
-        });
+                    @Override
+                    public void onDataChanged() {
+                        emptyListView.setVisibility(adapter.getItemCount() == 0 ? View.VISIBLE : View.INVISIBLE);
+                    }
+                });
 
         // Scroll to bottom on new messages
 //        adapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {

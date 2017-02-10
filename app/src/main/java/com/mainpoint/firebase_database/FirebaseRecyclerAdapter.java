@@ -17,21 +17,16 @@ package com.mainpoint.firebase_database;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 
-import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.Query;
 
 public abstract class FirebaseRecyclerAdapter<T, VH extends RecyclerView.ViewHolder>
         extends RecyclerView.Adapter<VH> {
     private static final String TAG = "FirebaseRecyclerAdapter";
 
-    private FirebaseArray mSnapshots;
-    private Class<T> mModelClass;
+    private FirebaseArray<T> mSnapshots;
 
-    FirebaseRecyclerAdapter(Class<T> modelClass,
-                            FirebaseArray snapshots) {
-        mModelClass = modelClass;
+    FirebaseRecyclerAdapter(FirebaseArray<T> snapshots) {
         mSnapshots = snapshots;
 
         mSnapshots.setOnChangedListener(new FirebaseArray.OnChangedListener() {
@@ -68,14 +63,11 @@ public abstract class FirebaseRecyclerAdapter<T, VH extends RecyclerView.ViewHol
     }
 
     /**
-     * @param modelClass Firebase will marshall the data at a location into
-     *                   an instance of a class that you provide
-     * @param ref        The Firebase location to watch for data changes. Can also be a slice of a location,
-     *                   using some combination of {@code limit()}, {@code startAt()}, and {@code endAt()}.
+     * @param ref The Firebase location to watch for data changes. Can also be a slice of a location,
+     *            using some combination of {@code limit()}, {@code startAt()}, and {@code endAt()}.
      */
-    public FirebaseRecyclerAdapter(Class<T> modelClass,
-                                   Query ref) {
-        this(modelClass, new FirebaseArray(ref));
+    public FirebaseRecyclerAdapter(Class<T> mModelClass, Query ref) {
+        this(new FirebaseArray<>(ref, mModelClass));
     }
 
     public void cleanup() {
@@ -88,28 +80,13 @@ public abstract class FirebaseRecyclerAdapter<T, VH extends RecyclerView.ViewHol
     }
 
     public T getItem(int position) {
-        return parseSnapshot(mSnapshots.getItem(position));
-    }
-
-    /**
-     * This method parses the DataSnapshot into the requested type. You can override it in subclasses
-     * to do custom parsing.
-     *
-     * @param snapshot the DataSnapshot to extract the model from
-     * @return the model extracted from the DataSnapshot
-     */
-    protected T parseSnapshot(DataSnapshot snapshot) {
-        return snapshot.getValue(mModelClass);
-    }
-
-    public DatabaseReference getRef(int position) {
-        return mSnapshots.getItem(position).getRef();
+        return mSnapshots.getModelItem(position);
     }
 
     @Override
     public long getItemId(int position) {
         // http://stackoverflow.com/questions/5100071/whats-the-purpose-of-item-ids-in-android-listview-adapter
-        return mSnapshots.getItem(position).getKey().hashCode();
+        return mSnapshots.getFirebaseItem(position).getKey().hashCode();
     }
 
     @Override

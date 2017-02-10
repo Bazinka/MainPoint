@@ -26,7 +26,7 @@ import java.util.List;
 /**
  * This class implements an array-like collection on top of a Firebase location.
  */
-class FirebaseArray implements ChildEventListener, ValueEventListener {
+public class FirebaseArray<T> implements ChildEventListener, ValueEventListener {
     public interface OnChangedListener {
         enum EventType {ADDED, CHANGED, REMOVED, MOVED}
 
@@ -42,10 +42,14 @@ class FirebaseArray implements ChildEventListener, ValueEventListener {
     private OnChangedListener mListener;
     private List<DataSnapshot> mSnapshots = new ArrayList<>();
 
-    public FirebaseArray(Query ref) {
+    private Class<T> mModelClass;
+
+    public FirebaseArray(Query ref, Class<T> modelClass) {
         mQuery = ref;
         mQuery.addChildEventListener(this);
         mQuery.addValueEventListener(this);
+
+        mModelClass = modelClass;
     }
 
     public void cleanup() {
@@ -57,8 +61,20 @@ class FirebaseArray implements ChildEventListener, ValueEventListener {
         return mSnapshots.size();
     }
 
-    public DataSnapshot getItem(int index) {
+    public DataSnapshot getFirebaseItem(int index) {
         return mSnapshots.get(index);
+    }
+
+    public T getModelItem(int index) {
+        return parseSnapshot(mSnapshots.get(index));
+    }
+
+    public ArrayList<T> toModelItemArrayList() {
+        ArrayList<T> modelItemList = new ArrayList<>();
+        for (int index = 0; index < getCount(); index++) {
+            modelItemList.add(parseSnapshot(mSnapshots.get(index)));
+        }
+        return modelItemList;
     }
 
     private int getIndexForKey(String key) {
@@ -108,7 +124,9 @@ class FirebaseArray implements ChildEventListener, ValueEventListener {
 
     @Override
     public void onDataChange(DataSnapshot dataSnapshot) {
-        mListener.onDataChanged();
+        if (mListener != null) {
+            mListener.onDataChanged();
+        }
     }
 
     @Override
@@ -134,5 +152,16 @@ class FirebaseArray implements ChildEventListener, ValueEventListener {
         if (mListener != null) {
             mListener.onCancelled(databaseError);
         }
+    }
+
+    /**
+     * This method parses the DataSnapshot into the requested type. You can override it in subclasses
+     * to do custom parsing.
+     *
+     * @param snapshot the DataSnapshot to extract the model from
+     * @return the model extracted from the DataSnapshot
+     */
+    private T parseSnapshot(DataSnapshot snapshot) {
+        return snapshot.getValue(mModelClass);
     }
 }
