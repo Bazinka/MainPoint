@@ -27,7 +27,7 @@
     https://developers.google.com/identity/sign-in/web/devconsole-project
     https://developers.google.com/android/guides/google-services-plugin
     -->
-    <string name="default_web_client_id" translatable="false">CHANGE-ME</string>
+    <string name="default_web_client_id" translatable="false">203884155333-aj06p0l667mdtsn53lmnkeel07ceplju.apps.googleusercontent.com</string>
 
 
     <!--
